@@ -13,6 +13,8 @@
     "KUBE_API_TOKEN": "",
     "AGENT_NAMESPACE" : "litmus",
     "AGENT" : "Self-Agent",
-    "TARGET_APP_NS" : "default"
+    "TARGET_APP_NS" : "default",
+    "githubToken": "",
+    "MONGO_URL": "localhost:27017"
   }
 }

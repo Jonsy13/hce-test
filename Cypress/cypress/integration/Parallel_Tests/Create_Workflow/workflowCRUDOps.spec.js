@@ -1,13 +1,12 @@
-/// <reference types="Cypress" />
-import * as workflows from "../../../fixtures/Workflows.json";
+// <reference types="Cypress" />
 import * as user from "../../../fixtures/Users.json";
 
 export const workflowNamespace = Cypress.env("AGENT_NAMESPACE");
 export const agent = Cypress.env("AGENT");
 export const targetAppNamespace = Cypress.env("TARGET_APP_NS");
 
-describe("Testing the upload Workflow with correct workflow manifest and target application", () => {
-  before("Clearing the Cookies and deleting the Cookies", () => {
+describe("Testing the workflow schedule on a recurring basis with a target application", () => {
+  before("Loggin in and checking if agent exists", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
     cy.visit("/create-scenario");
@@ -15,26 +14,39 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
 
   let workflowName = "";
   let workflowSubject = "";
+  let scheduleDate = "";
+  let scheduleTime = "";
 
   it("Creating a target application", () => {
     cy.createTargetApplication(targetAppNamespace, "target-app-1", "nginx");
   });
 
-  it("Running Workflows by uploading it", () => {
+  it("Scheduling a workflow with an existing target application", () => {
     cy.chooseAgent(agent);
     cy.get("[data-cy=ControlButtons] Button").eq(0).click();
     cy.chooseWorkflow(3, "", `sample-workflow-${workflowNamespace}.yaml`);
     cy.wait(500);
     cy.get("[data-cy=ControlButtons] Button").eq(1).click();
-    cy.wait(1000); // Waiting for Workflow Details to get filled
     cy.get("[data-cy=WorkflowNamespace] input").should(
       "have.value",
       workflowNamespace
     );
+    cy.wait(1000);
     cy.get("[data-cy=ControlButtons] Button").eq(1).click();
-    cy.selectSchedule(0);
+    scheduleDate = new Date();
+    // Schedule 2 min later from current time
+    scheduleDate.setMinutes(scheduleDate.getMinutes() + 2);
+    cy.selectSchedule(1, 0, scheduleDate.getMinutes());
     cy.get("[data-cy=ControlButtons] Button").eq(1).click();
     cy.wait(1000);
+    cy.get("[data-cy=schedule]").should(
+      "have.text",
+      `${
+        scheduleDate.getMinutes() == 0
+          ? `Every hour`
+          : `At ${scheduleDate.getMinutes()} minutes past the hour`
+      }, between 12:00 AM and 11:59 PM`
+    );
     cy.get("[data-cy=ControlButtons] Button").eq(0).click(); // Clicking on finish Button
     cy.get("[data-cy=FinishModal]").should("be.visible");
     cy.get("[data-cy=WorkflowName]").then(($name) => {
@@ -48,10 +60,42 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.get("[data-cy=GoToWorkflowButton]").click();
   });
 
-  it("Validating workflow existence and status on cluster", () => {
-    // shouldExist = true
-    cy.validateWorkflowExistence(workflowName, workflowNamespace, true);
-    cy.validateWorkflowStatus(workflowName, workflowNamespace, ["Running"]);
+  it("Disable schedule and validate if it's running or not", () => {
+    indexedDB.deleteDatabase("localforage");
+    cy.visit("/scenarios");
+    cy.GraphqlWait("listWorkflows", "listSchedules");
+    cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
+    cy.get("[data-cy=browseSchedule]").click();
+    cy.disableSchedule();
+    let FirstRowWorkflowName = "";
+    cy.get("[data-cy=runs]").click();
+    const currDate = new Date();
+    const timeDiff = scheduleDate.getTime() - currDate.getTime();
+    cy.wait(timeDiff);
+    cy.get("table")
+      .find("tr")
+      .eq(1)
+      .then(($div) => {
+        FirstRowWorkflowName = $div.text();
+      });
+    expect(FirstRowWorkflowName).not.to.be.equal(workflowName);
+  });
+
+  it("Enable schedule and reschedule it for +2 mins", () => {
+    cy.get("[data-cy=browseSchedule]").click();
+    cy.enableSchedule();
+    scheduleDate = new Date();
+    // Schedule 2 min later from current time
+    scheduleDate.setMinutes(scheduleDate.getMinutes() + 2);
+    cy.wait(1000);
+    cy.editScheduleByMins(scheduleDate.getMinutes());
+    cy.get("[data-cy=WorkflowName]").then(($name) => {
+      workflowName = $name.text();
+      return;
+    });
+    cy.wait(1000);
+    cy.get("[data-cy=SaveEditScheduleButton]").click();
+    cy.get("[data-cy=FinishModal]").should("be.visible");
   });
 
   it("Checking Schedules Table for scheduled Workflow", () => {
@@ -59,10 +103,6 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.visit("/scenarios");
     cy.get("[data-cy=browseSchedule]").click();
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
-    cy.get("[data-cy=workflowSchedulesTable] input")
-      .eq(0)
-      .clear()
-      .type(workflowName);
     cy.wait(1000);
     cy.get("table")
       .find("tr")
@@ -70,7 +110,48 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
       .then(($div) => {
         cy.wrap($div).find("td").eq(0).should("have.text", workflowName); // Matching Workflow Name Regex
         cy.wrap($div).find("td").eq(1).should("have.text", agent); // Matching Target Agent
+        scheduleTime = scheduleDate.toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        });
+        scheduleTime = scheduleTime.split(" ")[0];
+        cy.wrap($div).find("td").eq(5).should("include.text", scheduleTime);
+        cy.waitUntil(
+          () =>
+            cy
+              .wrap($div)
+              .find("td")
+              .eq(5)
+              .then((nextRun) => {
+                const currDate = new Date();
+                const currTime = currDate
+                  .toLocaleString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })
+                  .split(" ")[0];
+                return nextRun.text().includes(currTime) ? true : false;
+              }),
+          {
+            verbose: true,
+            interval: 500,
+            timeout: 600000,
+          }
+        );
       });
+  });
+
+  it("Validating cron workflow existence and status on cluster", () => {
+    let shouldExist = true;
+    let cronWorkflow = true;
+    cy.validateWorkflowExistence(
+      workflowName,
+      workflowNamespace,
+      shouldExist,
+      cronWorkflow
+    );
   });
 
   it("Checking workflow browsing table and validating Verdict, Resilience score and Experiments Passed", () => {
@@ -95,10 +176,6 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.visit("/scenarios");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
-    cy.validateWorkflowStatus(workflowName, workflowNamespace, [
-      "Running",
-      "Succeeded",
-    ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)
       .clear()
@@ -113,7 +190,6 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.get("[data-cy=statsTabs]").find("button").eq(0).click();
     // Expected Nodes
     const graphNodesNameArray = [
-      workflowName,
       "install-chaos-experiments",
       "pod-delete",
       "revert-chaos",
@@ -135,12 +211,13 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.validateWorkflowInfo(
       workflowName,
       workflowNamespace,
-      workflowSubject,
+      "",
       agent,
-      "Non cron chaos scenario",
-      "Non cron chaos scenario"
+      "Cron workflow",
+      "Cron workflow"
     );
-    cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
+    cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0, "Cron workflow");
+    cy.validateRecurringStats();
     const experimentArray = [
       {
         experimentName: "pod-delete",
@@ -151,24 +228,14 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     ];
     cy.validateExperimentsTable(experimentArray);
   });
-});
 
-describe("Testing the upload Workflow with incorrect workflow manifest", () => {
-  before("Clearing the Cookies and deleting the Cookies", () => {
-    cy.requestLogin(user.AdminName, user.AdminPassword);
-    cy.waitForCluster(agent);
-    cy.visit("/create-scenario");
-  });
-
-  it("Running Workflows by uploading it", () => {
-    cy.chooseAgent(agent);
-    cy.get("[data-cy=ControlButtons] Button").eq(0).click();
-    cy.chooseWorkflow(3, "", "sample-workflow-incorrect.yaml");
-    cy.get("[data-cy=ErrorUploadYAML]").should("have.text", "Retry Upload");
-    cy.get("[data-cy=ControlButtons] Button").eq(1).click();
-    cy.get("[data-cy=AlertBox]").should(
-      "have.text",
-      "Please select a chaos scenario type"
-    );
+  it("Delete scheduled workflow", () => {
+    cy.visit("/scenarios");
+    cy.GraphqlWait("listWorkflows", "listSchedules");
+    cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
+    cy.get("[data-cy=browseSchedule]").click();
+    cy.deleteSchedule();
+    // shouldExist = false
+    cy.validateWorkflowExistence(workflowName, workflowNamespace, false);
   });
 });

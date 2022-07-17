@@ -186,7 +186,7 @@ Cypress.Commands.add("deleteSchedule", () => {
   cy.get("[data-cy=deleteScheduleButtons] button").eq(1).click();
 });
 
-/// ************************** Terminate workflow ***********
+/// ************************** Terminate Chaos Scenario ***********
 
 Cypress.Commands.add("terminateWorkflow", () => {
   cy.get("[data-cy=browseWorkflowOptions]")
@@ -194,6 +194,18 @@ Cypress.Commands.add("terminateWorkflow", () => {
     .click({ scrollBehavior: false });
   cy.get("[data-cy=terminateWorkflow]")
     .eq(0)
-    .should("have.text", "Terminate Workflow")
+    .should("have.text", "Terminate Chaos Scenario")
     .click({ force: true });
+});
+
+/// ************************** Rerun workflow ***********
+
+Cypress.Commands.add("rerunWorkflow", () => {
+  cy.get("[data-cy=browseScheduleOptions]")
+    .eq(0)
+    .click({ scrollBehavior: false });
+  cy.get("[data-cy=reRunSchedule]")
+    .eq(0)
+    .should("have.text", "Rerun Schedule")
+    .click();
 });

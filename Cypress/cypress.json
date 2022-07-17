@@ -10,11 +10,13 @@
   "env": {
     "authURL": "http://localhost:3000",
     "apiURL": "http://localhost:8080",
-    "KUBE_API_SERVER": "https://0.0.0.0:34907",
-    "KUBE_API_TOKEN": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ikp4YXdqdjdJSzJqVTFxcmVXNEZpclVCaHpCWGROXzBkbVJtYW1xMlJ5dkUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tbHNueGciLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImNmMzFkYWVkLTVkZTktNDkzZC05MWU5LTNmZTI1NzdiOTMxNyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.NJiEQQcHZZMGFv7vMpywXDX7PohIoJaqw4swDwEmms28N0AzfOH15FzcYR3t72tKLnUcGiP94Ua_GOdFoBzCccAEiLoaaq_S_gykQWMXQkiaI7HZTw6wTx7ftWVMv7_pq20mWc4_au_LWNEpbdbT52nDMIV9RzSHL7YquKcia9pLGuY9Il8QYzysm0p-9xAFl6QCJFRrkECbdMIMOLnhYWyuH502HLhnqiiD9CDM53oA59T6EOQVK7dI83y3jpd2hHoKKwtKk22_hOsM0cQzZt3SzxORZFKUvvkYSuSYMVdkvKlFWEPdrenlOrkyKoRj6fOJZK0vb4R52Di32vMgzQ",
-    "AGENT_NAMESPACE": "litmus",
-    "AGENT": "Self-Agent",
-    "TARGET_APP_NS": "default",
-    "DATA_SOURCE_URL": ""
+    "KUBE_API_SERVER": "",
+    "KUBE_API_TOKEN": "",
+    "AGENT_NAMESPACE" : "litmus",
+    "AGENT" : "Self-Agent",
+    "TARGET_APP_NS" : "default",
+    "DATA_SOURCE_URL" : "",
+    "githubToken": "",
+    "MONGO_URL": "localhost:27017"
   }
 }
