@@ -13,10 +13,6 @@ license=${LICENSE}
 
 echo "$license" | base64 --decode > Cypress/cypress/fixtures/cn-license.txt
 
-# echo -e "\n-----------Cloning CLE Repository------------------\n"
-# git clone https://${personal_access_token}@github.com/chaosnative/cle.git
-
-
 function install_portal_cs_mode() {
 
     echo -e "\n---------------Installing CLE in Cluster Scope----------\n"
