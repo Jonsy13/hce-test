@@ -29,7 +29,7 @@ git checkout -b <YOUR_BRANCH_NAME>
 cd Cypress
 ```
 
-- As we use different plugins from Cypress for testing different Scenarios, we have to install all packages. For this Developers can use npm -
+- As we use different plugins from Cypress for testing different workflows, we have to install all packages. For this Developers can use npm -
 
 ```
 npm install
@@ -87,7 +87,7 @@ These are minor guidelines or support points for new contributors -
 <Button data-cy="ButtonFeature"/>
 ```
 
-- Try not to test same scenario repeatedly. For e.g. The login feature is already tested in login test, so we should avoid testing it again while writing new test, as all scenarios starts from login only.
+- Try not to test same scenario repeatedly. For e.g. The login feature is already tested in login test, so we should avoid testing it again while writing new test, as all workflows starts from login only.
 
 - We have added some resuable functions in pages directory according to pages, which can be used for writing new test. Use the provided functions to avoid repetition and also add reusable functions while working on new test cases. It will help others to avoid repetition.
 

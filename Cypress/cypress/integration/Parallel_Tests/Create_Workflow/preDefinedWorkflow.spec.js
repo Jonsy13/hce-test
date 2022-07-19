@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 import * as user from "../../../fixtures/Users.json";
 import * as workflows from "../../../fixtures/Workflows.json";
+import routes from "../../../fixtures/routes";
 
 export const workflowNamespace = Cypress.env("AGENT_NAMESPACE");
 export const agent = Cypress.env("AGENT");
@@ -10,7 +11,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
   before("Clearing the Cookies and deleting the Cookies", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
-    cy.visit("/create-scenario");
+    cy.visit(routes.createWorkflow());
   });
 
   let workflowName = "";
@@ -114,7 +115,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
 
   it("Checking Schedules Table for scheduled Workflow", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit("/scenarios");
+    cy.visit(routes.workflows());
     cy.get("[data-cy=browseSchedule]").click();
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=workflowSchedulesTable] input")
@@ -151,7 +152,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
 
   it("Validating graph nodes", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit("/scenarios");
+    cy.visit(routes.workflows());
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",

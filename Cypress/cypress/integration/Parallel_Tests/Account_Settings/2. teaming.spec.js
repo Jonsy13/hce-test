@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 import { AdminName, AdminPassword } from "../../../fixtures/Users.json";
 import { user1, user2 } from "../../../fixtures/teaming.json";
+import routes from "../../../fixtures/routes";
 
 describe("Testing the Teaming section", () => {
   before("Clearing local storage", () => {
@@ -10,7 +11,7 @@ describe("Testing the Teaming section", () => {
   });
 
   it("Test case to check the accessibility of Teaming Tab", () => {
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.url().should("include", "/settings");
   });
 
@@ -70,7 +71,7 @@ describe("Test case to check the Invitation Functionality (Invitation as a Viewe
     cy.requestLogin(AdminName, AdminPassword);
 
     //Visit the teaming section and invite the newly created user as viewer"
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").should("be.visible").click();
     cy.get("[data-cy=toolBarComponent]").should("be.visible");
     cy.inviteUser(user1.username, user1.role);
@@ -100,7 +101,7 @@ describe("Test case to check the Invitation Functionality (Invitation as a Viewe
     cy.requestLogin(user1.username, user1.password);
 
     //Go to Settings/Team section & accept the invite
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.validateProjectsDetails({
       totalProjects: 1,
@@ -179,7 +180,7 @@ describe("Test case to check the Invitation Functionality (Invitation as a Viewe
     cy.requestLogin(AdminName, AdminPassword);
 
     //Validate the user as a member of project
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.get("[data-cy=teamingSearch] input").clear().type(user1.username);
     cy.validateMember({
@@ -235,7 +236,7 @@ describe("Test case to check the Invitation Functionality (Invitation as an Edit
     cy.requestLogin(AdminName, AdminPassword);
     cy.visit("/");
     //Visit the teaming section and invite the newly created user as viewer"
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").should("be.visible").click();
     cy.get("[data-cy=toolBarComponent]").should("be.visible");
     cy.inviteUser(user2.username, user2.role);
@@ -265,7 +266,7 @@ describe("Test case to check the Invitation Functionality (Invitation as an Edit
     cy.requestLogin(user2.username, user2.password);
 
     //Go to Settings/Team section & accept the invite
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.validateProjectsDetails({
       totalProjects: 1,
@@ -339,7 +340,7 @@ describe("Test case to check the Invitation Functionality (Invitation as an Edit
     cy.requestLogin(AdminName, AdminPassword);
 
     //Validate the user as a member of project
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.get("[data-cy=teamingSearch] input").clear().type(user2.username);
     cy.validateMember({
@@ -359,7 +360,7 @@ describe("Testing the functionality of removing user from project", () => {
   });
 
   it("Going to Settings page & removing user1 from admin's project", () => {
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.get("[data-cy=teamingSearch] input").clear().type(user1.username);
     cy.get("[data-cy=removeMember]").click();
@@ -374,7 +375,7 @@ describe("Testing the functionality of removing user from project", () => {
   });
 
   it("Login again as user1 & check the membership in admin's project", () => {
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.get("[data-cy=activeTab]")
       .find("span")
@@ -391,7 +392,7 @@ describe("Testing the functionality of leaving from project", () => {
   });
 
   it("Going to Settings page & leave admin's project", () => {
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.get("[data-cy=leaveAcceptedProject] Button").click();
     cy.reload(); // Not handled by frontend (Data is updated after refresh)
@@ -405,7 +406,7 @@ describe("Testing the functionality of leaving from project", () => {
   it("Login again as admin & check the membership in admin's project", () => {
     cy.logout();
     cy.requestLogin(AdminName, AdminPassword);
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
 
     // User after leaving the project, should not be member of project
@@ -436,7 +437,7 @@ describe("Testing the functionality of resending invitation to exited user2", ()
   });
 
   it("Goto settings page & resent invitation to user2", () => {
-    cy.visit("/settings");
+    cy.visit(routes.settings());
     cy.get("[data-cy=teaming]").click();
     cy.get("[data-cy=invitedTab]").click();
     cy.get("[data-cy=teamingSearch] input").clear().type(user2.username);

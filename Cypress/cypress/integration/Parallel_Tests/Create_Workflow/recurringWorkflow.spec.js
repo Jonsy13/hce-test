@@ -1,6 +1,6 @@
 // <reference types="Cypress" />
 import * as user from "../../../fixtures/Users.json";
-import * as workflows from "../../../fixtures/Workflows.json";
+import routes from "../../../fixtures/routes";
 
 export const workflowNamespace = Cypress.env("AGENT_NAMESPACE");
 export const agent = Cypress.env("AGENT");
@@ -10,7 +10,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
   before("Loggin in and checking if agent exists", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
-    cy.visit("/create-scenario");
+    cy.visit(routes.createWorkflow());
   });
 
   let workflowName = "";
@@ -63,7 +63,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
 
   it("Checking Schedules Table for scheduled Workflow", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit("/scenarios");
+    cy.visit(routes.workflows());
     cy.get("[data-cy=browseSchedule]").click();
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.wait(1000);
@@ -137,7 +137,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
 
   it("Validating graph nodes", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit("/scenarios");
+    cy.visit(routes.workflows());
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)
@@ -167,7 +167,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
 
   it("Testing the workflow statistics", () => {
     cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit("/analytics");
+    cy.visit(routes.analytics());
     cy.get("[data-cy=litmusDashboard]").click();
     cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
     cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
@@ -193,7 +193,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
   });
 
   it("Disable schedule", () => {
-    cy.visit("/scenarios");
+    cy.visit(routes.workflows());
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=browseSchedule]").click();

@@ -11,10 +11,11 @@ import * as user from "../fixtures/Users.json";
 import endpoints from "../fixtures/endpoints";
 import { GET_CLUSTER } from "../fixtures/graphql/queries";
 import { REGISTER_CLUSTER } from "../fixtures/graphql/mutations";
+import routes from "../fixtures/routes";
 
 //Custom Command for waiting for required Agent to come in active state.
 Cypress.Commands.add("waitForCluster", (agentName) => {
-  cy.visit("/targets");
+  cy.visit(routes.agents());
   // Checking if required Agent is there.
   // cy.get("table").contains("td", agentName).should("be.visible");
   // Wait for Agent to be active

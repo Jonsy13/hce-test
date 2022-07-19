@@ -94,8 +94,8 @@ jobs:
         uses: cypress-io/github-action@v2
         if: always()
         continue-on-error: false
-        with:
-          spec: cypress/integration/Parallel_Tests/**/*.spec.js
+        with: 
+          spec: cypress/integration/Parallel_Tests/Create_Workflow/*.spec.js
           working-directory: Cypress/
           config-file: cypress.prod.json
           env: true

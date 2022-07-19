@@ -1,4 +1,5 @@
 /// ************************** Verify and Commit Page **********************
+import routes from "../../fixtures/routes";
 
 Cypress.Commands.add(
   "verifyDetails",
@@ -30,7 +31,7 @@ Cypress.Commands.add(
     TotalExperiments,
     Experiments
   ) => {
-    cy.visit("/scenarios");
+    cy.visit(routes.workflows());
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.get("[data-cy=runs]").click();
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);

@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 import * as user from "../../../fixtures/Users.json";
+import routes from "../../../fixtures/routes"
 
 export const agent = Cypress.env("AGENT");
 
@@ -9,7 +10,7 @@ describe("Testing CRUD operation with MyHub", () => {
     () => {
       cy.requestLogin(user.AdminName, user.AdminPassword);
       cy.waitForCluster(agent);
-      cy.visit("/myhub");
+      cy.visit(routes.myhubs());
     }
   );
 

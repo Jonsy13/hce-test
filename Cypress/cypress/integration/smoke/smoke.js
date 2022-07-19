@@ -5,6 +5,7 @@
 
 import * as user from "../../fixtures/Users.json";
 import * as workflows from "../../fixtures/Workflows.json";
+import routes from "../../../fixtures/routes";
 
 export const agent = Cypress.env("AGENT");
 
@@ -137,7 +138,7 @@ export const customWorkflowSmokeTest = () => {
 };
 
 export const templateWorkflowSmokeTest = () => {
-  cy.visit("/workflows");
+  cy.visit(routes.workflows());
   cy.get("[role=tab]").eq(1).click();
   cy.get("[data-cy=browseScheduleOptions]").click();
   cy.get("[data-cy=saveTemplate]").click();
