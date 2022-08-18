@@ -116,7 +116,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
       });
   });
 
-  it("Checking workflow browsing table and validating Verdict, Resilience score and Experiments Passed", () => {
+  it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {
     let Experiments = [
       {
         name: "podtato-main-pod-delete-chaos",

@@ -83,7 +83,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
       .click({ scrollBehavior: false });
     cy.get("[data-cy=saveTemplate]")
       .eq(0)
-      .should("have.text", "Save Template")
+      .should("have.text", "Save template")
       .click({ force: true });
     cy.configureWorkflowSettings(
       "e2e-test-template",
@@ -172,7 +172,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
       });
   });
 
-  it("Checking workflow browsing table and validating Verdict, Resilience score and Experiments Passed", () => {
+  it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {
     let Experiments = [
       {
         name: "pod-delete",
@@ -234,8 +234,8 @@ describe("Testing the workflow creation wizard using Templates", () => {
       workflowName,
       workflowNamespace,
       agent,
-      "Non Cron Chaos Scenario",
-      "Non Cron Chaos Scenario"
+      "Non cron Chaos Scenario",
+      "Non cron Chaos Scenario"
     );
     cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
     const experimentArray = [

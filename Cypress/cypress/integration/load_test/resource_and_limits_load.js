@@ -59,7 +59,7 @@ describe("Running 5-5 workflows on 3 different namespaced delegates for calculat
 
                 const tunningParameters = {
                   general: {
-                    hubName: "Litmus ChaosHub",
+                    hubName: "Enterprise ChaosHub",
                     experimentName: "pod-delete",
                     context: `pod-delete_${agentName}`,
                   },

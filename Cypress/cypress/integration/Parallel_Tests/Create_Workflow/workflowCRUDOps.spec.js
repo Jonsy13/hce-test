@@ -149,7 +149,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
     );
   });
 
-  it("Checking workflow browsing table and validating Verdict, Resilience score and Experiments Passed", () => {
+  it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {
     let Experiments = [
       {
         name: "pod-delete",

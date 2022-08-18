@@ -59,7 +59,7 @@ Cypress.Commands.add(
           .eq(0)
           .find("[data-cy=ExperimentsPassed]")
           .then((expPassed) => {
-            return expPassed.text() != "Experiments Passed : NA" ? true : false;
+            return expPassed.text() != "Chaos Experiments passed : NA" ? true : false;
           }),
       {
         verbose: true,
@@ -79,7 +79,7 @@ Cypress.Commands.add(
           .find("[data-cy=ExperimentsPassed]")
           .should(
             "have.text",
-            `Experiments Passed : ${ExperimentsPassed}/${TotalExperiments}`
+            `Chaos Experiments passed : ${ExperimentsPassed}/${TotalExperiments}`
           );
         cy.wrap($div)
           .find("[data-cy=WorkflowStatus]")
@@ -150,7 +150,7 @@ Cypress.Commands.add(
     );
     cy.get("[data-cy=infoAgentName]").should("have.text", agentName);
 
-    if (regularity === "Non Cron Chaos Scenario") {
+    if (regularity === "Non cron Chaos Scenario") {
       cy.get("[data-cy=infoWorkflowRegularity]").should(
         "have.text",
         `Regularity :${regularity}`

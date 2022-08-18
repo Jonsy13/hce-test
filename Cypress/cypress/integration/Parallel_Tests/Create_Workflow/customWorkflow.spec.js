@@ -146,7 +146,7 @@ describe("Testing the validation of the final verdict with an existing target ap
       });
   });
 
-  it("Checking workflow browsing table and validating Verdict, Resilience score and Experiments Passed", () => {
+  it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {
     let Experiments = [
       {
         name: "pod-delete",
@@ -207,8 +207,8 @@ describe("Testing the validation of the final verdict with an existing target ap
       workflowName,
       workflowNamespace,
       agent,
-      "Non Cron Chaos Scenario",
-      "Non Cron Chaos Scenario"
+      "Non cron Chaos Scenario",
+      "Non cron Chaos Scenario"
     );
     cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
     const experimentArray = [
@@ -231,12 +231,12 @@ describe("Testing the validation of the final verdict with an existing target ap
       .find("tr")
       .eq(1)
       .then(($div) => {
-        cy.wrap($div).find("td").eq(5).should("have.text", "Non Cron Chaos Scenario");
+        cy.wrap($div).find("td").eq(5).should("have.text", "Non cron Chaos Scenario");
       });
     cy.rerunWorkflow();
   });
 
-  it("Checking workflow browsing table and validating Verdict, Resilience score and Experiments Passed", () => {
+  it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {
     let Experiments = [
       {
         name: "pod-delete",
@@ -255,8 +255,8 @@ describe("Testing the validation of the final verdict with an existing target ap
       workflowName,
       workflowNamespace,
       agent,
-      "Non Cron Chaos Scenario",
-      "Non Cron Chaos Scenario"
+      "Non cron Chaos Scenario",
+      "Non cron Chaos Scenario"
     );
     cy.validateWorkflowStatsGraph(1, 1, 50, 50, 50);
     cy.validateRecurringStatsWithLessResiliency();

@@ -67,7 +67,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
       });
   });
 
-  it("Checking workflow browsing table and validating Verdict, Resilience score and Experiments Passed", () => {
+  it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {
     let Experiments = [
       {
         name: "pod-delete",
@@ -129,8 +129,8 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
       workflowName,
       workflowNamespace,
       agent,
-      "Non Cron Chaos Scenario",
-      "Non Cron Chaos Scenario"
+      "Non cron Chaos Scenario",
+      "Non cron Chaos Scenario"
     );
     cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
     const experimentArray = [

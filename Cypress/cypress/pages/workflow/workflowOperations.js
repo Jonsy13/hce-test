@@ -20,7 +20,7 @@ Cypress.Commands.add(
       );
       cy.get("[data-cy=selectPreDefinedMyHub]").within(() => {
         cy.get("[data-cy=PreDefinedHubOption]")
-          .contains("Litmus ChaosHub")
+          .contains("Enterprise ChaosHub")
           .should("be.visible");
       });
       cy.get("[data-cy=PredefinedWorkflowsRadioGroup]").should("be.visible");
@@ -157,7 +157,7 @@ Cypress.Commands.add("disableSchedule", () => {
     .click({ scrollBehavior: false });
   cy.get("[data-cy=disableSchedule]")
     .eq(0)
-    .should("have.text", "Disable Schedule")
+    .should("have.text", "Disable schedule")
     .click({ force: true });
 });
 
