@@ -1,9 +1,9 @@
-name: CLE-E2E-Pipeline
+name: HCE-OnPrem-E2E-Pipeline
 on:
   workflow_dispatch:
     inputs:
       Tag:
-        default: "master-ci"
+        default: "ci"
 
       Module:
         default: "All"
@@ -17,7 +17,7 @@ env:
   NS_MODE_NAMESPACE: "default"
   EXTERNAL_AGENT: "external-agent"
 
-# Jobs for deploying and testing CLE on a KinD Cluster
+# Jobs for deploying and testing HCE-OnPrem on a KinD Cluster
 jobs:
   Cluster-Scope-Mode:
     runs-on: ubuntu-20.04
@@ -27,6 +27,10 @@ jobs:
         AcessType: [NodePort, Ingress, LoadBalancer]
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
 
       - uses: AbsaOSS/k3d-action@v2
         name: Create 1st Cluster
@@ -42,7 +46,7 @@ jobs:
           kubectl cluster-info --context k3d-${{ env.SELF_AGENT }}
           kubectl get nodes
           kubectl get pods -n kube-system
-
+          
       - name: Deploying Litmus-Portal using **k8s-manifest**
         run: |
           chmod 755 ./scripts/install-portal.sh
@@ -94,8 +98,8 @@ jobs:
         uses: cypress-io/github-action@v2
         if: always()
         continue-on-error: false
-        with: 
-          spec: cypress/integration/Parallel_Tests/Create_Workflow/*.spec.js
+        with:
+          spec: cypress/integration/Parallel_Tests/**/*.spec.js
           working-directory: Cypress/
           config-file: cypress.prod.json
           env: true
@@ -107,6 +111,8 @@ jobs:
           CYPRESS_AGENT: "Self-Agent"
           CYPRESS_TARGET_APP_NS: "default"
           CYPRESS_DATA_SOURCE_URL: ${{ env.DATA_SOURCE_URL }}
+
+      # TODO: Additional Tests will be added from here
 
       - name: Portal Cleanup
         if: always()
@@ -140,14 +146,12 @@ jobs:
           args: >
             --agents 3
             --k3s-arg "--no-deploy=traefik, metrics-server@server:*"
-
       - name: Configuring and Testing the Cluster Installation
         run: |
           kubectl cluster-info --context k3d-${{ env.SELF_AGENT }}
           kubectl get nodes
           kubectl get pods -n kube-system
-
-      - name: Deploying CLE using **k8s-manifest**
+      - name: Deploying HCE-OnPrem using **k8s-manifest**
         run: |
           chmod 755 ./scripts/install-portal.sh
           ./scripts/install-portal.sh
@@ -167,7 +171,6 @@ jobs:
           KUBE_API_TOKEN=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
           echo "KUBE_API_SERVER=$KUBE_API_SERVER" >> $GITHUB_ENV
           echo "KUBE_API_TOKEN=$KUBE_API_TOKEN" >> $GITHUB_ENV
-
       # RBAC for allowing Cypress Runner to access Cluster resources
       - run: |
           kubectl apply -f Cypress/cypress-rbac.yml
@@ -211,6 +214,8 @@ jobs:
           CYPRESS_AGENT: "Self-Agent"
           CYPRESS_TARGET_APP_NS: ${{ env.NS_MODE_NAMESPACE}}
           CYPRESS_DATA_SOURCE_URL: ${{ env.DATA_SOURCE_URL }}
+
+      # TODO: Additional Tests will be added from here
 
       - name: Portal Cleanup
         if: always()

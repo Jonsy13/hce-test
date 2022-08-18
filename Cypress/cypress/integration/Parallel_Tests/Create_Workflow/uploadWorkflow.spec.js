@@ -1,7 +1,5 @@
 /// <reference types="Cypress" />
-import * as workflows from "../../../fixtures/Workflows.json";
 import * as user from "../../../fixtures/Users.json";
-import routes from "../../../fixtures/routes";
 
 export const workflowNamespace = Cypress.env("AGENT_NAMESPACE");
 export const agent = Cypress.env("AGENT");
@@ -11,11 +9,10 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
   before("Clearing the Cookies and deleting the Cookies", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
-    cy.visit(routes.createWorkflow());
+    cy.visit("/create-scenario");
   });
 
   let workflowName = "";
-  let workflowSubject = "";
 
   it("Creating a target application", () => {
     cy.createTargetApplication(targetAppNamespace, "target-app-1", "nginx");
@@ -42,10 +39,6 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
       workflowName = $name.text();
       return;
     });
-    cy.get("[data-cy=WorkflowSubject]").then(($subject) => {
-      workflowSubject = $subject.text();
-      return;
-    });
     cy.get("[data-cy=GoToWorkflowButton]").click();
   });
 
@@ -57,7 +50,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
 
   it("Checking Schedules Table for scheduled Workflow", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.get("[data-cy=browseSchedule]").click();
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=workflowSchedulesTable] input")
@@ -94,7 +87,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
 
   it("Validating graph nodes", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
@@ -129,17 +122,15 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
 
   it("Testing the workflow statistics", () => {
     cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit(routes.analytics());
-    cy.get("[data-cy=litmusDashboard]").click();
+    cy.visit("/analytics");
     cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
     cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
     cy.validateWorkflowInfo(
       workflowName,
       workflowNamespace,
-      workflowSubject,
       agent,
-      "Non cron chaos scenario",
-      "Non cron chaos scenario"
+      "Non Cron Chaos Scenario",
+      "Non Cron Chaos Scenario"
     );
     cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
     const experimentArray = [
@@ -158,7 +149,7 @@ describe("Testing the upload Workflow with incorrect workflow manifest", () => {
   before("Clearing the Cookies and deleting the Cookies", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
-    cy.visit(routes.createWorkflow());
+    cy.visit("/create-scenario");
   });
 
   it("Running Workflows by uploading it", () => {
@@ -169,7 +160,7 @@ describe("Testing the upload Workflow with incorrect workflow manifest", () => {
     cy.get("[data-cy=ControlButtons] Button").eq(1).click();
     cy.get("[data-cy=AlertBox]").should(
       "have.text",
-      "Please select a chaos scenario type"
+      "Please select a Chaos Scenario type"
     );
   });
 });

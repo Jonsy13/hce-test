@@ -18,7 +18,7 @@ Litmus-Portal is a Cloud-native application that can be configured and managed e
 - Firstly we need a k8s cluster to deploy the litmus portal, users can use any K8s Cluster. After that, you need to run the following command to install portal:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/litmus-portal/cluster-k8s-manifest.yml
+kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/litmus-portal/manifests/cluster-k8s-manifest.yml
 ```
 
 - Clone the [Litmus-e2e]("https://github.com/litmuschaos/litmus-e2e") repository, checkout to your branch and change directory to Cypress -
@@ -29,7 +29,7 @@ git checkout -b <YOUR_BRANCH_NAME>
 cd Cypress
 ```
 
-- As we use different plugins from Cypress for testing different workflows, we have to install all packages. For this Developers can use npm -
+- As we use different plugins from Cypress for testing different Scenarios, we have to install all packages. For this Developers can use npm -
 
 ```
 npm install
@@ -47,11 +47,30 @@ cypress.json
 }
 ```
 
+- Run the script to get `KUBE_API_SERVER` (K8s API server URL) and `KUBE_API_TOKEN` (K8s API auth token) inside the same folder -
+
+```
+sh kube-api-config.sh <CLUSTER_NAME>
+```
+
+- Configure the generated URL and token inside `cypress.json`
+
+```
+{
+  "env" : {
+    "KUBE_API_SERVER": "<Generated_URL>",
+    "KUBE_API_TOKEN": "<Generated_Token>",
+  }
+}
+```
+
 - Now, we can start Cypress Test Runner using command -
 
 ```
 npx cypress open
 ```
+
+Optional:- For running tests related to Datasource & Monitoring, follow instructions for setting up Monitoring Infrastructure from [here](https://github.com/litmuschaos/litmus/tree/master/monitoring#setup-the-monitoring-infrastructure)
 
 - Developers can manually trigger the tests from the Cypress Test Runner by clicking on test names and play around to get started.
 
@@ -87,7 +106,7 @@ These are minor guidelines or support points for new contributors -
 <Button data-cy="ButtonFeature"/>
 ```
 
-- Try not to test same scenario repeatedly. For e.g. The login feature is already tested in login test, so we should avoid testing it again while writing new test, as all workflows starts from login only.
+- Try not to test same scenario repeatedly. For e.g. The login feature is already tested in login test, so we should avoid testing it again while writing new test, as all scenarios starts from login only.
 
 - We have added some resuable functions in pages directory according to pages, which can be used for writing new test. Use the provided functions to avoid repetition and also add reusable functions while working on new test cases. It will help others to avoid repetition.
 

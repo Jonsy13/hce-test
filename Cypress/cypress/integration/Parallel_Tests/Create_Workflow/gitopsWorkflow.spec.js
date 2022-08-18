@@ -1,7 +1,6 @@
 /// <reference types="Cypress" />
 import * as workflows from "../../../fixtures/Workflows.json";
 import * as user from "../../../fixtures/Users.json";
-import routes from "../../../fixtures/routes";
 
 export const agent = Cypress.env("AGENT");
 
@@ -9,7 +8,7 @@ describe("Testing the create Workflow Utility", () => {
   before("Clearing the Cookies and deleting the Cookies", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
-    cy.visit(routes.settings());
+    cy.visit("/settings");
   });
 
   it("Checking accessiblity of GitOps Panel", () => {

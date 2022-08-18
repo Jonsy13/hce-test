@@ -1,6 +1,5 @@
 // <reference types="Cypress" />
 import * as user from "../../../fixtures/Users.json";
-import routes from "../../../fixtures/routes";
 
 export const workflowNamespace = Cypress.env("AGENT_NAMESPACE");
 export const agent = Cypress.env("AGENT");
@@ -10,11 +9,10 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
   before("Loggin in and checking if agent exists", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
-    cy.visit(routes.createWorkflow());
+    cy.visit("/create-scenario");
   });
 
   let workflowName = "";
-  let workflowSubject = "";
   let scheduleDate = "";
   let scheduleTime = "";
 
@@ -54,16 +52,12 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
       workflowName = $name.text();
       return;
     });
-    cy.get("[data-cy=WorkflowSubject]").then(($subject) => {
-      workflowSubject = $subject.text();
-      return;
-    });
     cy.get("[data-cy=GoToWorkflowButton]").click();
   });
 
   it("Disable schedule and validate if it's running or not", () => {
     indexedDB.deleteDatabase("localforage");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=browseSchedule]").click();
@@ -101,7 +95,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
 
   it("Checking Schedules Table for scheduled Workflow", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.get("[data-cy=browseSchedule]").click();
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.wait(1000);
@@ -175,7 +169,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
 
   it("Validating graph nodes", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)
@@ -205,14 +199,12 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
 
   it("Testing the workflow statistics", () => {
     cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit(routes.analytics());
-    cy.get("[data-cy=litmusDashboard]").click();
+    cy.visit("/analytics");
     cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
     cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
     cy.validateWorkflowInfo(
       workflowName,
       workflowNamespace,
-      "",
       agent,
       "Cron workflow",
       "Cron workflow"
@@ -231,7 +223,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
   });
 
   it("Delete scheduled workflow", () => {
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=browseSchedule]").click();

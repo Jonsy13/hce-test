@@ -11,11 +11,10 @@ import * as user from "../fixtures/Users.json";
 import endpoints from "../fixtures/endpoints";
 import { GET_CLUSTER } from "../fixtures/graphql/queries";
 import { REGISTER_CLUSTER } from "../fixtures/graphql/mutations";
-import routes from "../fixtures/routes";
 
 //Custom Command for waiting for required Agent to come in active state.
 Cypress.Commands.add("waitForCluster", (agentName) => {
-  cy.visit(routes.agents());
+  cy.visit("/delegates");
   // Checking if required Agent is there.
   // cy.get("table").contains("td", agentName).should("be.visible");
   // Wait for Agent to be active
@@ -48,7 +47,7 @@ Cypress.Commands.add("GraphqlWait", (operationName, alias) => {
 
 //Custom command for Logut.
 Cypress.Commands.add("logout", () => {
-  cy.clearCookie("litmus-cc-token");
+  cy.clearCookie("litmus-cle-token");
   cy.reload();
 });
 
@@ -138,7 +137,6 @@ Cypress.Commands.add("deleteTargetApplication", (namespace, targetAppName) => {
 });
 
 Cypress.Commands.add("validateScaffold", () => {
-  cy.get("[data-cy=headerComponent]").should("be.visible");
   cy.get("[data-cy=sidebarComponent]").should("be.visible");
 });
 
@@ -430,7 +428,7 @@ Cypress.Commands.add("initialRBACSetup", (createAgent) => {
   return cy
     .task("clearDB")
     .then(() => {
-      cy.clearCookie("litmus-cc-token");
+      cy.clearCookie("litmus-cle-token");
       indexedDB.deleteDatabase("localforage");
     })
     .then(() => {
@@ -491,7 +489,7 @@ Cypress.Commands.add("initialRBACSetup", (createAgent) => {
         body: {
           operationName: "listClusters",
           variables: {
-            projectID: project1Id,
+            projectID: adminProjectId,
           },
           query: GET_CLUSTER,
         },
@@ -501,14 +499,9 @@ Cypress.Commands.add("initialRBACSetup", (createAgent) => {
       });
     })
     .then((res) => {
-      cluster1Id = getNested(
-        res,
-        "body",
-        "data",
-        "listClusters",
-        "at(0)",
-        "clusterID"
-      );
+      if (createAgent){
+        cluster1Id = res.body.data.listClusters[0].clusterID
+      }
       return {
         adminProjectId,
         project1Id,

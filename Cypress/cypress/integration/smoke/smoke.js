@@ -5,7 +5,6 @@
 
 import * as user from "../../fixtures/Users.json";
 import * as workflows from "../../fixtures/Workflows.json";
-import routes from "../../../fixtures/routes";
 
 export const agent = Cypress.env("AGENT");
 
@@ -16,7 +15,7 @@ export const setup = (doWaitForCluster) => {
 };
 
 const visitChooseWorkflowPage = () => {
-  cy.visit("/create-workflow");
+  cy.visit("/create-scenario");
   cy.chooseAgent(0);
   cy.get("[data-cy=ControlButtons] Button").click();
 };
@@ -138,7 +137,7 @@ export const customWorkflowSmokeTest = () => {
 };
 
 export const templateWorkflowSmokeTest = () => {
-  cy.visit(routes.workflows());
+  cy.visit("/scenarios");
   cy.get("[role=tab]").eq(1).click();
   cy.get("[data-cy=browseScheduleOptions]").click();
   cy.get("[data-cy=saveTemplate]").click();

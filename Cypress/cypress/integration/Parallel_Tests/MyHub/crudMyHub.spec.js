@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 import * as user from "../../../fixtures/Users.json";
-import routes from "../../../fixtures/routes"
 
 export const agent = Cypress.env("AGENT");
 
@@ -10,13 +9,14 @@ describe("Testing CRUD operation with MyHub", () => {
     () => {
       cy.requestLogin(user.AdminName, user.AdminPassword);
       cy.waitForCluster(agent);
-      cy.visit(routes.myhubs());
+      cy.visit("/chaoshub");
     }
   );
 
   it("Adding a new MyHub with incorrect details", () => {
     cy.get("[data-cy=myHubConnectButton]").click();
     cy.wait(1000);
+    cy.get("[data-cy=connectFromGithubButton]").click();
     cy.get("[data-cy=hubName] input").clear().type("my-test-hub");
     cy.get("[data-cy=githubURLInput]")
       .find("input")
@@ -36,6 +36,7 @@ describe("Testing CRUD operation with MyHub", () => {
     cy.GraphqlWait("addChaosHub", "addNewMyHub");
     cy.get("[data-cy=myHubConnectButton]").click();
     cy.wait(1000);
+    cy.get("[data-cy=connectFromGithubButton]").click();
     cy.get("[data-cy=hubName] input").clear().type("my-test-hub");
     cy.get("[data-cy=githubURLInput]")
       .find("input")
@@ -93,7 +94,7 @@ describe("Testing CRUD operation with MyHub", () => {
     cy.get("[data-cy=myHubCardOption]").eq(1).click();
     cy.get("[data-cy=myHubOptions]").should("be.visible");
     cy.get("[data-cy=myHubDelete]")
-      .contains("p", "Disconnect Hub")
+      .contains("p", "Disconnect ChaosHub")
       .then(($div) => {
         cy.wrap($div).click({ force: true });
       });

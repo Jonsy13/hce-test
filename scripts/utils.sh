@@ -138,11 +138,11 @@ function manifest_image_update(){
     version="$1"
     manifest_name="$2"
     echo "$2"
-    sed -i -e "s|chaosnative/cle-frontend:ci|chaosnative/cle-frontend:$version|g" $manifest_name
-    sed -i -e "s|chaosnative/cle-server:ci|chaosnative/cle-server:$version|g" $manifest_name
-    sed -i -e "s|chaosnative/cle-auth-server:ci|chaosnative/cle-auth-server:$version|g" $manifest_name
-    sed -i -e "s|chaosnative/cle-subscriber:ci|chaosnative/cle-subscriber:$version|g" $manifest_name
-    sed -i -e "s|chaosnative/cle-event-tracker:ci|chaosnative/cle-event-tracker:$version|g" $manifest_name
+    sed -i -e "s|litmuschaos/litmusportal-frontend:ci|litmuschaos/litmusportal-frontend:$version|g" $manifest_name
+    sed -i -e "s|litmuschaos/litmusportal-server:ci|litmuschaos/litmusportal-server:$version|g" $manifest_name
+    sed -i -e "s|litmuschaos/litmusportal-auth-server:ci|litmuschaos/litmusportal-auth-server:$version|g" $manifest_name
+    sed -i -e "s|litmuschaos/litmusportal-subscriber:ci|litmuschaos/litmusportal-subscriber:$version|g" $manifest_name
+    sed -i -e "s|litmuschaos/litmusportal-event-tracker:ci|litmuschaos/litmusportal-event-tracker:$version|g" $manifest_name
 }
 
 ## Function to verify image for a deployment in given namespace
@@ -150,7 +150,7 @@ function verify_deployment_image(){
     image=$1
     deployment=$2
     namespace=$3
-    IMAGE=$(eval "kubectl get deployment ${deployement} -n ${namespace} -o=jsonpath='{$.spec.template.spec.containers[:1].image}'")
+    IMAGE=$(eval "kubectl get deployment ${deployment} -n ${namespace} -o=jsonpath='{$.spec.template.spec.containers[:1].image}'")
     if [[ "$image" == "$IMAGE" ]];then
         echo "$deployment deployment is not having the image ${image}"
         exit 1
@@ -171,6 +171,34 @@ function verify_all_components(){
     done
 }
 
+function verify_deployment_nodeselector(){
+    deployment=$1
+    namespace=$2
+    requiredNodeSelector=$3
+
+    nodeSelector=$(kubectl get deploy ${deployment} -n ${namespace} -o jsonpath='{.spec.template.spec.nodeSelector}')
+    if [[ ${nodeSelector} == ${requiredNodeSelector} ]];then
+        echo "$deployment deployment is having the required nodeSelector ${requiredNodeSelector} ✓"
+    else 
+        echo "$deployment deployment is not having the required nodeSelector ${requiredNodeSelector}"
+        exit 1
+    fi
+}
+
+function verify_deployment_tolerations(){
+    deployment=$1
+    namespace=$2
+    requiredTolerations=$3
+
+    tolerations=$(kubectl get deploy ${deployment} -n ${namespace} -o jsonpath='{.spec.template.spec.tolerations}')
+    if [[ "$tolerations" == "$requiredTolerations" ]];then
+        echo "$deployment deployment is having the required tolerations ${requiredTolerations} ✓"
+    else 
+        echo "$deployment deployment is not having the required tolerations ${requiredTolerations}"
+        exit 1
+    fi
+}
+
 # Function to setup Ingress in given namespace for ChaosCenter
 function setup_ingress(){
     namespace=$1
@@ -180,6 +208,8 @@ function setup_ingress(){
 
     # Enabling Ingress in Portal
     kubectl set env deployment/litmusportal-server -n ${namespace} --containers="graphql-server" INGRESS="true"
+
+    kubectl set env deployment/litmusportal-server -n ${namespace} --containers="graphql-server" INGRESS_NAME="litmus-ingress"
 
     # Installing ingress-nginx
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -195,6 +225,18 @@ function setup_ingress(){
     wait_for_ingress litmus-ingress ${namespace}
 }
 
+function get_mongo_url(){
+    namespace=$1
+    kubectl patch svc mongo-service -p '{"spec": {"type": "LoadBalancer"}}' -n ${namespace}
+    export loadBalancer=$(kubectl get services mongo-service -n ${namespace} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+    wait_for_pods ${namespace} 360
+    wait_for_loadbalancer mongo-service ${namespace}
+    export loadBalancerIP=$(kubectl get services mongo-service -n ${namespace} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+    export AccessURL="$loadBalancerIP:27017"
+    echo "MONGO_URL=$AccessURL" >> $GITHUB_ENV
+
+}
+
 # Function to get Access point of ChaosCenter based on Service type(mode) deployed in given namespace
 function get_access_point(){
     namespace=$1
@@ -203,27 +245,28 @@ function get_access_point(){
     if [[ "$accessType" == "LoadBalancer" ]];then
 
         kubectl patch svc litmusportal-frontend-service -p '{"spec": {"type": "LoadBalancer"}}' -n ${namespace}
+        kubectl patch svc litmusportal-server-service -p '{"spec": {"type": "LoadBalancer"}}' -n ${namespace}
         export loadBalancer=$(kubectl get services litmusportal-frontend-service -n ${namespace} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
         wait_for_pods ${namespace} 360
         wait_for_loadbalancer litmusportal-frontend-service ${namespace}
         export loadBalancerIP=$(kubectl get services litmusportal-frontend-service -n ${namespace} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-        export AccessURL="http://$loadBalancerIP:9091"
+        export AccessURL="http://$loadBalancerIP:9091/"
         wait_for_url $AccessURL
         echo "URL=$AccessURL" >> $GITHUB_ENV
 
-    elif [[ "$acessType" == "Ingress" ]];then
+    elif [[ "$accessType" == "Ingress" ]];then
 
         setup_ingress ${namespace}
         # Ingress IP for accessing Portal
         export AccessURL=$(kubectl get ing litmus-ingress -n ${namespace} -o=jsonpath='{.status.loadBalancer.ingress[0].ip}' | awk '{print $1}')
-        echo "URL=http://$AccessURL" >> $GITHUB_ENV
+        echo "URL=http://$AccessURL/" >> $GITHUB_ENV
 
     else 
         # By default NodePort will be used. 
         export NODE_NAME=$(kubectl -n ${namespace} get pod  -l "component=litmusportal-frontend" -o=jsonpath='{.items[*].spec.nodeName}')
         export NODE_IP=$(kubectl -n ${namespace} get nodes $NODE_NAME -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
         export NODE_PORT=$(kubectl -n ${namespace} get -o jsonpath="{.spec.ports[0].nodePort}" services litmusportal-frontend-service)
-        export AccessURL="http://$NODE_IP:$NODE_PORT"
+        export AccessURL="http://$NODE_IP:$NODE_PORT/"
         echo "URL=$AccessURL" >> $GITHUB_ENV
 
     fi

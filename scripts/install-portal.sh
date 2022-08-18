@@ -7,6 +7,7 @@ version=${PORTAL_VERSION}
 accessType=${ACCESS_TYPE}
 namespace=${NAMESPACE}
 installation_mode=${INSTALLATION_MODE}
+deploy_self_agent=${DEPLOY_SELF_AGENT:="true"}
 personal_access_token=${PAT}
 
 license=${LICENSE}
@@ -15,31 +16,19 @@ echo "$license" | base64 --decode > Cypress/cypress/fixtures/cn-license.txt
 
 function install_portal_cs_mode() {
 
-    echo -e "\n---------------Installing CLE in Cluster Scope----------\n"
+    echo -e "\n---------------Installing HCE On-Prem in Cluster Scope----------\n"
 
-    # manifest_image_update $version ./manifests/cluster-k8s-manifest.yml
-
-    kubectl apply -f ./manifests/cluster-k8s-manifest.yml
+    kubectl apply -f https://hce.chaosnative.com/manifests/ci/hce-cluster-scope.yaml
 }
 
 function install_portal_ns_mode(){
 
-    echo -e "\n---------------Installing CLE in Namespaced Scope----------\n"
-
+    echo -e "\n---------------Installing HCE On-Prem in Namespace Scope----------\n"
     kubectl create ns ${namespace}
-
     # Installing CRD's, required for namespaced mode
-    kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/litmus-portal/litmus-portal-crds.yml
+    kubectl apply -f https://hce.chaosnative.com/manifests/ci/hce-crds.yaml
 
-    # Exporting namespace variable to update `namespaced-k8s-template.yml` manifest
-    export LITMUS_PORTAL_NAMESPACE=${namespace}
-
-    # Replacing ${LITMUS_PORTAL_NAMESPACE}
-    envsubst '${LITMUS_PORTAL_NAMESPACE}' < ./manifests/ns-k8s-manifest.yml > ${namespace}-ns-scoped-litmus-portal-manifest.yml
-    # manifest_image_update $version ${namespace}-ns-scoped-litmus-portal-manifest.yml
-
-    # Applying the manifest
-    kubectl apply -f ${namespace}-ns-scoped-litmus-portal-manifest.yml -n ${namespace}
+    kubectl apply -f https://hce.chaosnative.com/manifests/ci/hce-namespace.yaml -n ${namespace}
 }
 
 
@@ -58,6 +47,9 @@ function wait_for_portal_to_be_ready(){
 
     # Deployments verification
     verify_all_components litmusportal-frontend,litmusportal-server ${namespace}
+    
+    # Setting Self_Agent to false
+    kubectl set env deployment/litmusportal-server -n litmus --containers="graphql-server" SELF_AGENT=${deploy_self_agent}
 
     # Pods verification
     verify_pod litmusportal-frontend ${namespace}
@@ -79,5 +71,5 @@ else
 fi
 
 wait_for_portal_to_be_ready
+get_mongo_url ${namespace}
 get_access_point ${namespace} ${accessType}
-

@@ -1,7 +1,6 @@
 /// <reference types="Cypress" />
 import * as user from "../../../fixtures/Users.json";
 import * as workflows from "../../../fixtures/Workflows.json";
-import routes from "../../../fixtures/routes";
 
 export const workflowNamespace = Cypress.env("AGENT_NAMESPACE");
 export const agent = Cypress.env("AGENT");
@@ -11,11 +10,10 @@ describe("Testing the workflow creation wizard using Templates", () => {
   before("Clearing the Cookies and deleting the Cookies", () => {
     cy.requestLogin(user.AdminName, user.AdminPassword);
     cy.waitForCluster(agent);
-    cy.visit(routes.createWorkflow());
+    cy.visit("/create-scenario");
   });
 
   let workflowName = "";
-  let workflowSubject = "";
 
   it("Running uploaded Workflow", () => {
     cy.chooseAgent(agent);
@@ -38,7 +36,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
   });
 
   it("Download schedule manifest", () => {
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=browseSchedule]").click();
@@ -47,7 +45,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
 
   it("Checking Workflow Browsing Table for scheduled workflow", () => {
     cy.GraphqlWait("listWorkflowRuns", "listWorkflows");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.get("[data-cy=runs]").click();
     cy.wait("@listWorkflows").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=WorkflowRunsTable] input")
@@ -100,7 +98,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
 
   it("Terminating the workflow", () => {
     cy.validateWorkflowStatus(workflowName, workflowNamespace, ["Running"]);
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.get("[data-cy=runs]").click();
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
@@ -115,7 +113,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
   });
 
   it("Scheduling a new workflow from the saved template", () => {
-    cy.visit(routes.createWorkflow());
+    cy.visit("/create-scenario");
     cy.chooseAgent(agent);
     cy.get("[data-cy=ControlButtons] Button").eq(0).click();
     cy.chooseWorkflow(1, 0);
@@ -146,10 +144,6 @@ describe("Testing the workflow creation wizard using Templates", () => {
       workflowName = $name.text();
       return;
     });
-    cy.get("[data-cy=WorkflowSubject]").then(($subject) => {
-      workflowSubject = $subject.text();
-      return;
-    });
     cy.get("[data-cy=GoToWorkflowButton]").click();
   });
 
@@ -161,7 +155,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
 
   it("Checking Schedules Table for scheduled Workflow", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.get("[data-cy=browseSchedule]").click();
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=workflowSchedulesTable] input")
@@ -198,7 +192,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
 
   it("Validating graph nodes", () => {
     cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.visit(routes.workflows());
+    cy.visit("/scenarios");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
@@ -233,17 +227,15 @@ describe("Testing the workflow creation wizard using Templates", () => {
 
   it("Testing the workflow statistics", () => {
     cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit(routes.analytics());
-    cy.get("[data-cy=litmusDashboard]").click();
+    cy.visit("/analytics");
     cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
     cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
     cy.validateWorkflowInfo(
       workflowName,
       workflowNamespace,
-      workflowSubject,
       agent,
-      "Non cron chaos scenario",
-      "Non cron chaos scenario"
+      "Non Cron Chaos Scenario",
+      "Non Cron Chaos Scenario"
     );
     cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
     const experimentArray = [
