@@ -221,7 +221,7 @@ function setup_ingress(){
     wait_for_pods ${namespace} 360
 
     # Applying Ingress Manifest for Accessing Portal
-    kubectl apply -f litmus/ingress.yml -n ${namespace}
+    kubectl apply -f scripts/ingress.yml -n ${namespace}
     wait_for_ingress litmus-ingress ${namespace}
 }
 
