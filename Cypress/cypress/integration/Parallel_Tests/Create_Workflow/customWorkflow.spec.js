@@ -85,7 +85,7 @@ describe("Testing the validation of the final verdict with an existing target ap
     const tunningParameters = {
       targetApp: {
         annotationCheckToggle: false,
-        appns: "default",
+        appns: targetAppNamespace,
         appKind: "deployment",
         appLabel: "app=nginx",
       },

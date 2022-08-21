@@ -28,6 +28,8 @@ function install_portal_ns_mode(){
     # Installing CRD's, required for namespaced mode
     kubectl apply -f https://hce.chaosnative.com/manifests/ci/hce-crds.yaml
 
+    kubectl apply -f manifests/litmus-admin-rbac.yml -n ${namespace}
+
     kubectl apply -f https://hce.chaosnative.com/manifests/ci/hce-namespace.yaml -n ${namespace}
 }
 
