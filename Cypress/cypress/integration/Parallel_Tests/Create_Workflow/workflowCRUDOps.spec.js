@@ -137,7 +137,8 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
         //   }
         // );
       });
-    cy.wait(2000);
+    //Waiting for 2mins
+    cy.wait(120000);
   });
 
   it("Validating cron workflow existence and status on cluster", () => {
