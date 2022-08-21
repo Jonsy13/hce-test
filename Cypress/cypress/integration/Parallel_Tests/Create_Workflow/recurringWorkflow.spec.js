@@ -68,36 +68,36 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
       .then(($div) => {
         cy.wrap($div).find("td").eq(0).should("have.text", workflowName); // Matching Workflow Name Regex
         cy.wrap($div).find("td").eq(1).should("have.text", agent); // Matching Target Agent
-        scheduleTime = scheduleDate.toLocaleString("en-US", {
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        });
-        scheduleTime = scheduleTime.split(" ")[0];
-        cy.wrap($div).find("td").eq(5).should("include.text", scheduleTime);
-        cy.waitUntil(
-          () =>
-            cy
-              .wrap($div)
-              .find("td")
-              .eq(5)
-              .then((nextRun) => {
-                const currDate = new Date();
-                const currTime = currDate
-                  .toLocaleString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: true,
-                  })
-                  .split(" ")[0];
-                return nextRun.text().includes(currTime) ? true : false;
-              }),
-          {
-            verbose: true,
-            interval: 500,
-            timeout: 600000,
-          }
-        );
+      //   scheduleTime = scheduleDate.toLocaleString("en-US", {
+      //     hour: "numeric",
+      //     minute: "numeric",
+      //     hour12: true,
+      //   });
+      //   scheduleTime = scheduleTime.split(" ")[0];
+      //   cy.wrap($div).find("td").eq(5).should("include.text", scheduleTime);
+      //   cy.waitUntil(
+      //     () =>
+      //       cy
+      //         .wrap($div)
+      //         .find("td")
+      //         .eq(5)
+      //         .then((nextRun) => {
+      //           const currDate = new Date();
+      //           const currTime = currDate
+      //             .toLocaleString("en-US", {
+      //               hour: "numeric",
+      //               minute: "numeric",
+      //               hour12: true,
+      //             })
+      //             .split(" ")[0];
+      //           return nextRun.text().includes(currTime) ? true : false;
+      //         }),
+      //     {
+      //       verbose: true,
+      //       interval: 500,
+      //       timeout: 600000,
+      //     }
+      //   );
       });
   });
 

@@ -142,7 +142,7 @@ Cypress.Commands.add("editScheduleByMins", (minsToSet) => {
     .click({ scrollBehavior: false });
   cy.get("[data-cy=editSchedule]")
     .eq(0)
-    .should("have.text", "Edit Schedule")
+    .should("have.text", "Edit schedule")
     .click({ force: true });
   cy.get("[data-cy=edit]").click();
   cy.get("[data-cy=RecurringSchedule] :radio").eq(0).check();
@@ -208,6 +208,6 @@ Cypress.Commands.add("rerunWorkflow", () => {
     .click({ scrollBehavior: false });
   cy.get("[data-cy=reRunSchedule]")
     .eq(0)
-    .should("have.text", "Rerun Schedule")
+    .should("have.text", "Rerun Chaos Scenario")
     .click();
 });
