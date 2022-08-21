@@ -224,8 +224,14 @@ describe("Testing the validation of the final verdict with an existing target ap
 
   // This will runs the above workflow without target application
   it("Rerun a non-recurring workflow", () => {
+    cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.visit("/scenarios");
     cy.get("[data-cy=browseSchedule]").click();
+    cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
+    cy.get("[data-cy=workflowSchedulesTable] input")
+      .eq(0)
+      .clear()
+      .type(workflowName);
     cy.wait(2000);
     cy.rerunWorkflow();
   });

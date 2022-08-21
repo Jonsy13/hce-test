@@ -96,7 +96,7 @@ describe("Testing CRUD operation with MyHub", () => {
     cy.get("[data-cy=myHubCardOption]").eq(1).click();
     cy.get("[data-cy=myHubOptions]").should("be.visible");
     cy.get("[data-cy=myHubDelete]")
-      .contains("Disconnect ChaosHub")
+      .contains("Disconnect Hub")
       .then(($div) => {
         cy.wrap($div).click({ force: true });
       });

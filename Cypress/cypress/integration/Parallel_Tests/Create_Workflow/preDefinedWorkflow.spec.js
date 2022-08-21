@@ -126,9 +126,9 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
     cy.validateVerdict(
       workflowName,
       agent,
-      "Succeeded",
-      100,
-      1,
+      "Failed",
+      0,
+      0,
       1,
       Experiments
     );
