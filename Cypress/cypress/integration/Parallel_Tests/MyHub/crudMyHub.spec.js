@@ -16,7 +16,8 @@ describe("Testing CRUD operation with MyHub", () => {
   it("Adding a new MyHub with incorrect details", () => {
     cy.get("[data-cy=myHubConnectButton]").click();
     cy.wait(1000);
-    cy.get("[data-cy=connectFromGithubButton]").click();
+    //Needs to be changed
+    cy.contains("Connect a new Git repository").click();
     cy.get("[data-cy=hubName] input").clear().type("my-test-hub");
     cy.get("[data-cy=githubURLInput]")
       .find("input")
@@ -36,7 +37,8 @@ describe("Testing CRUD operation with MyHub", () => {
     cy.GraphqlWait("addChaosHub", "addNewMyHub");
     cy.get("[data-cy=myHubConnectButton]").click();
     cy.wait(1000);
-    cy.get("[data-cy=connectFromGithubButton]").click();
+    //Needs to be changed
+    cy.contains("Connect a new Git repository").click();
     cy.get("[data-cy=hubName] input").clear().type("my-test-hub");
     cy.get("[data-cy=githubURLInput]")
       .find("input")
@@ -61,7 +63,7 @@ describe("Testing CRUD operation with MyHub", () => {
     cy.GraphqlWait("updateChaosHub", "updateExistingMyHub");
     cy.get("[data-cy=myHubCardOption]").eq(1).click();
     cy.get("[data-cy=myHubOptions]").should("be.visible");
-    cy.get("[data-cy=editHub]").eq(1).click();
+    cy.get('[data-cy=myHubEdit]').click();
     cy.get("[data-cy=hubName]")
       .find("input")
       .eq(0)
@@ -94,7 +96,7 @@ describe("Testing CRUD operation with MyHub", () => {
     cy.get("[data-cy=myHubCardOption]").eq(1).click();
     cy.get("[data-cy=myHubOptions]").should("be.visible");
     cy.get("[data-cy=myHubDelete]")
-      .contains("p", "Disconnect ChaosHub")
+      .contains("Disconnect ChaosHub")
       .then(($div) => {
         cy.wrap($div).click({ force: true });
       });

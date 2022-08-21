@@ -35,7 +35,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
       0
     );
     cy.get("[data-cy=ControlButtons] Button").eq(1).click();
-    cy.wait(3000);
+    cy.wait(4000);
     cy.get("[data-cy=addExperimentSearch]").should("not.exist");
         // Need other logic for checking engineNames now (Table shows chaosegines now)
     // const experimentArray = [
@@ -52,7 +52,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
         annotationCheckToggle: false,
         appns: targetAppNamespace,
         appKind: "deployment",
-        appLabel: "name=podtato-main",
+        appLabel: "app=nginx",
       },
       steadyState: {},
       tuneExperiment: {
@@ -106,20 +106,20 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
       .eq(0)
       .clear()
       .type(workflowName);
-    cy.wait(1000);
+    cy.wait(2000);
     cy.get("table")
       .find("tr")
       .eq(1)
       .then(($div) => {
-        cy.wrap($div).find("td").eq(0).should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(1).should("have.text", agent); // Matching Target Agent
+        cy.wrap($div).find("td").eq(0).find("p").should("have.text", workflowName); // Matching Workflow Name Regex
+        cy.wrap($div).find("td").eq(1).find("p").should("have.text", agent); // Matching Target Agent
       });
   });
 
   it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {
     let Experiments = [
       {
-        name: "podtato-main-pod-delete-chaos",
+        name: "pod-delete",
         weight: 5,
       },
     ];

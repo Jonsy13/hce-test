@@ -23,7 +23,9 @@ Cypress.Commands.add(
           .contains("Enterprise ChaosHub")
           .should("be.visible");
       });
-      cy.get("[data-cy=PredefinedWorkflowsRadioGroup]").should("be.visible");
+      // cy.get("[data-cy=PredefinedWorkflowsRadioGroup]").should("be.visible");
+
+      cy.get("[data-testid=search]").eq(0).type("pod-delete")
       cy.get("[data-cy=PredefinedWorkflowsRadioGroup]")
         .children()
         .eq(subOption)

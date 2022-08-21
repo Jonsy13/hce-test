@@ -35,14 +35,6 @@ describe("Testing the workflow creation wizard using Templates", () => {
     cy.get("[data-cy=GoToWorkflowButton]").click();
   });
 
-  it("Download schedule manifest", () => {
-    cy.visit("/scenarios");
-    cy.GraphqlWait("listWorkflows", "listSchedules");
-    cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
-    cy.get("[data-cy=browseSchedule]").click();
-    cy.downloadWorkflowManifest(workflowName);
-  });
-
   it("Checking Workflow Browsing Table for scheduled workflow", () => {
     cy.GraphqlWait("listWorkflowRuns", "listWorkflows");
     cy.visit("/scenarios");

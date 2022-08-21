@@ -227,12 +227,6 @@ describe("Testing the validation of the final verdict with an existing target ap
     cy.visit("/scenarios");
     cy.get("[data-cy=browseSchedule]").click();
     cy.wait(2000);
-    cy.get("table")
-      .find("tr")
-      .eq(1)
-      .then(($div) => {
-        cy.wrap($div).find("td").eq(5).should("have.text", "Non cron Chaos Scenario");
-      });
     cy.rerunWorkflow();
   });
 
