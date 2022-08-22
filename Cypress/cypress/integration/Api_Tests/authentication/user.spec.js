@@ -88,6 +88,11 @@ describe("Testing post request to login api", () => {
 });
 
 describe("Testing post request to createUser api", () => {
+  
+  before("Activating the license",()=>{
+    cy.activateLicense(adminAccessToken);
+  })
+
   it("Testing create api without access_token [ Should not be possible ]", () => {
     cy.request({
       method: "POST",

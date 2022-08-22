@@ -10,6 +10,7 @@
   "env": {
     "authURL": "http://localhost:3000",
     "apiURL": "http://localhost:8080",
+    "licenseURL": "http://localhost:8081",
     "KUBE_API_SERVER": "",
     "KUBE_API_TOKEN": "",
     "AGENT_NAMESPACE" : "litmus",

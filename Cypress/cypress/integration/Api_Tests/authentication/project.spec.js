@@ -32,10 +32,12 @@ before("create 3 test users", () => {
       indexedDB.deleteDatabase("localforage");
     })
     .then(() => {
-      return cy.getAccessToken(user.AdminName, user.AdminPassword);
+      adminAccessToken = cy.getAccessToken(user.AdminName, user.AdminPassword);
     })
-    .then((token) => {
-      adminAccessToken = token;
+    .then(() => {
+      return cy.activateLicense(adminAccessToken);
+    })
+    .then(() => {
       return cy.createProject("admin's project", adminAccessToken);
     })
     .then(() => {

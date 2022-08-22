@@ -9,6 +9,7 @@
   "env": {
     "authURL": "/auth",
     "apiURL": "/api",
+    "licenseURL": "/license",
     "KUBE_API_SERVER": "",
     "KUBE_API_TOKEN": "",
     "AGENT_NAMESPACE" : "litmus",

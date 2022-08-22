@@ -20,7 +20,6 @@ let adminProjectId, adminAccessToken, cluster1Id, workflow1Id, template1Id, proj
 describe("Testing chaos workflow api", () => {
   before("Clear database", () => {
     cy.initialRBACSetup(true).then((data) => {
-      console.log(data);
       adminProjectId = data.adminProjectId;
       adminAccessToken = data.adminAccessToken;
       cluster1Id = data.cluster1Id;

@@ -410,6 +410,21 @@ function getNested(obj, ...args) {
   return args.reduce((obj, level) => obj && obj[level], obj);
 }
 
+Cypress.Commands.add("activateLicense",(adminAccessToken) => {
+  cy.fixture("cn-license.txt").then((license)=>{
+    cy.request({
+      method: "POST",
+      url: Cypress.env("licenseURL") + endpoints.licenseUpload(),
+      body: {
+        key: license,
+      },
+      headers: {
+        authorization: adminAccessToken,
+      },
+    });
+  })
+})
+
 Cypress.Commands.add("initialRBACSetup", (createAgent) => {
   const usersData = [user.user1, user.user2, user.user3];
   let adminProjectId,
@@ -432,10 +447,12 @@ Cypress.Commands.add("initialRBACSetup", (createAgent) => {
       indexedDB.deleteDatabase("localforage");
     })
     .then(() => {
-      return cy.getAccessToken(user.AdminName, user.AdminPassword);
+      adminAccessToken = cy.getAccessToken(user.AdminName, user.AdminPassword);
     })
-    .then((token) => {
-      adminAccessToken = token;
+    .then(() => {
+      cy.activateLicense(adminAccessToken);
+    })
+    .then(() => {
       return cy.createProject("admin's project", adminAccessToken);
     })
     .then((projectId) => {

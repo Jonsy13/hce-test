@@ -19,6 +19,7 @@ const endpoints = {
   declineInvitation: () => "/decline_invitation",
   removeInvitation: () => "/remove_invitation",
   leaveProject: () => "/leave_project",
+  licenseUpload: () => "/license/upload"
 };
 
 export default endpoints;
