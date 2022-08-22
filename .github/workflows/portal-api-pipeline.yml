@@ -17,7 +17,7 @@ env:
   NS_MODE_NAMESPACE: "default"
   EXTERNAL_AGENT: "external-agent"
 
-# Jobs for deploying and testing litmus-portal on a KinD Cluster
+# Jobs for deploying and testing HCE-OnPrem on a KinD Cluster
 jobs:
   CHAOS-CENTER-API-TESTS:
     runs-on: ubuntu-20.04
@@ -32,6 +32,7 @@ jobs:
         name: Create 1st Cluster
         with:
           cluster-name: ${{ env.SELF_AGENT }}
+          k3d-version: v5.2.2
           args: >
             --agents 3
             --k3s-arg "--no-deploy=traefik, metrics-server@server:*"
@@ -41,17 +42,19 @@ jobs:
           kubectl cluster-info --context k3d-${{ env.SELF_AGENT }}
           kubectl get nodes
           kubectl get pods -n kube-system
-
+          
       - name: Deploying Litmus-Portal using **k8s-manifest**
         run: |
-          chmod 755 ./litmus/install-portal.sh
-          ./litmus/install-portal.sh
+          chmod 755 ./scripts/install-portal.sh
+          ./scripts/install-portal.sh
         env:
           PORTAL_VERSION: ${{ env.TAG }}
           ACCESS_TYPE: "LoadBalancer"
           NAMESPACE: ${{ env.CS_MODE_NAMESPACE }}
           INSTALLATION_MODE: "CS-MODE"
-          DEPLOY_SELF_AGENT: "false"
+          LICENSE: ${{ secrets.VALID_LICENSE }}
+          PAT: ${{ secrets.PAT }}
+
       - name: Running API Tests
         uses: cypress-io/github-action@v2
         if: always()
@@ -69,7 +72,7 @@ jobs:
         if: always()
         run: |
           kubectl config use-context k3d-${{ env.SELF_AGENT }}
-          chmod 755 ./litmus/uninstall-portal.sh
-          ./litmus/uninstall-portal.sh
+          chmod 755 ./scripts/uninstall-portal.sh
+          ./scripts/uninstall-portal.sh
         env:
           PORTAL_VERSION: ${{ env.TAG }}
