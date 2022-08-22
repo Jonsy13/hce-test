@@ -112,7 +112,7 @@ describe("Testing the validation of the final verdict with an existing target ap
       workflows.customWorkflowDescription,
       0
     );
-    cy.get("[data-cy=ControlButtons] Button").eq(0).click(); // Clicking on finish Button
+    cy.get("[data-cy=ControlButtons] Button").eq(1).click(); // Clicking on finish Button
     cy.get("[data-cy=FinishModal]").should("be.visible");
     cy.get("[data-cy=WorkflowName]").then(($name) => {
       workflowName = $name.text();

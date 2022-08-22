@@ -33,7 +33,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.selectSchedule(0);
     cy.get("[data-cy=ControlButtons] Button").eq(1).click();
     cy.wait(1000);
-    cy.get("[data-cy=ControlButtons] Button").eq(0).click(); // Clicking on finish Button
+    cy.get("[data-cy=ControlButtons] Button").eq(1).click(); // Clicking on finish Button
     cy.get("[data-cy=FinishModal]").should("be.visible");
     cy.get("[data-cy=WorkflowName]").then(($name) => {
       workflowName = $name.text();

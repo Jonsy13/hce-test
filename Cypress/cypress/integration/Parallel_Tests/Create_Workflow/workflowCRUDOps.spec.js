@@ -46,7 +46,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
           : `At ${scheduleDate.getMinutes()} minutes past the hour`
       }, between 12:00 AM and 11:59 PM`
     );
-    cy.get("[data-cy=ControlButtons] Button").eq(0).click(); // Clicking on finish Button
+    cy.get("[data-cy=ControlButtons] Button").eq(1).click(); // Clicking on finish Button
     cy.get("[data-cy=FinishModal]").should("be.visible");
     cy.get("[data-cy=WorkflowName]").then(($name) => {
       workflowName = $name.text();

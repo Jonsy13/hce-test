@@ -26,7 +26,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
     cy.selectSchedule(0);
     cy.get("[data-cy=ControlButtons] Button").eq(1).click();
     cy.wait(1000);
-    cy.get("[data-cy=ControlButtons] Button").eq(0).click(); // Clicking on finish Button
+    cy.get("[data-cy=ControlButtons] Button").eq(1).click(); // Clicking on finish Button
     cy.get("[data-cy=FinishModal]").should("be.visible");
     cy.get("[data-cy=WorkflowName]").then(($name) => {
       workflowName = $name.text();
@@ -130,7 +130,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
       workflows.nonRecurringworkflowDescription,
       0
     );
-    cy.get("[data-cy=ControlButtons] Button").eq(0).click(); // Clicking on finish Button
+    cy.get("[data-cy=ControlButtons] Button").eq(1).click(); // Clicking on finish Button
     cy.get("[data-cy=FinishModal]").should("be.visible");
     cy.get("[data-cy=WorkflowName]").then(($name) => {
       workflowName = $name.text();
