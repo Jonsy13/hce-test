@@ -16,8 +16,7 @@ describe("Testing CRUD operation with MyHub", () => {
   it("Adding a new MyHub with incorrect details", () => {
     cy.get("[data-cy=myHubConnectButton]").click();
     cy.wait(1000);
-    //Needs to be changed
-    cy.contains("Connect a new Git repository").click();
+    cy.get("[data-cy=connectFromGithubButton]").click();
     cy.get("[data-cy=hubName] input").clear().type("my-test-hub");
     cy.get("[data-cy=githubURLInput]")
       .find("input")
@@ -37,8 +36,7 @@ describe("Testing CRUD operation with MyHub", () => {
     cy.GraphqlWait("addChaosHub", "addNewMyHub");
     cy.get("[data-cy=myHubConnectButton]").click();
     cy.wait(1000);
-    //Needs to be changed
-    cy.contains("Connect a new Git repository").click();
+    cy.get("[data-cy=connectFromGithubButton]").click();
     cy.get("[data-cy=hubName] input").clear().type("my-test-hub");
     cy.get("[data-cy=githubURLInput]")
       .find("input")
