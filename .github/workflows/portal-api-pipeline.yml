@@ -52,6 +52,7 @@ jobs:
           ACCESS_TYPE: "LoadBalancer"
           NAMESPACE: ${{ env.CS_MODE_NAMESPACE }}
           INSTALLATION_MODE: "CS-MODE"
+          DEPLOY_SELF_AGENT: "false"
           LICENSE: ${{ secrets.VALID_LICENSE }}
           PAT: ${{ secrets.PAT }}
 

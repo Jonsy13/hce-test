@@ -19,7 +19,10 @@ export const CORE_CHART_FIELDS = `
       categoryDescription
       keywords
       maturity
-      experiments
+      experiments {
+        name
+        description
+      }
       maintainers {
         name
         email
