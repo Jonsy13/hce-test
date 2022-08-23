@@ -414,7 +414,7 @@ Cypress.Commands.add("activateLicense",(adminAccessToken) => {
   cy.readFile("cypress/fixtures/cn-license.txt").then((license)=>{
     cy.request({
       method: "POST",
-      url: Cypress.env("licenseURL") + "license/upload",
+      url: Cypress.env("licenseURL") + "/license/upload",
       body: {
         key: license,
       },
