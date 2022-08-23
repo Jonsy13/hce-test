@@ -34,6 +34,15 @@ async function drop(databaseName, mongoClient, collectionName) {
   });
 }
 
+async function remove(databaseName, mongoClient, collectionName) {
+  const collection = mongoClient.db(databaseName).collection(collectionName);
+  await collection.remove({}).catch((e) => {
+    if (e.code !== 26) {
+      throw e;
+    }
+  });
+}
+
 async function clearDatabase() {
   const client = new MongoClient(MONGO_URL, {
     useNewUrlParser: true,
@@ -58,10 +67,10 @@ async function clearDatabase() {
       "image-registry-collection",
     ];
     for (const element of auth) {
-      await drop("auth", client, element);
+      await remove("auth", client, element);
     }
     for (const element of litmus) {
-      await drop("litmus", client, element);
+      await remove("litmus", client, element);
     }
     client.close();
     return true;
