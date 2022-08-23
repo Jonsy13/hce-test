@@ -18,6 +18,6 @@
     "TARGET_APP_NS" : "default",
     "DATA_SOURCE_URL" : "",
     "githubToken": "",
-    "MONGO_URL": "localhost:27017"
+    "MONGO_URL": "34.172.185.197:27017"
   }
 }
