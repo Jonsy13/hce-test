@@ -20,9 +20,7 @@ Cypress.Commands.add("waitForCluster", (agentName) => {
   // Wait for Agent to be active
   cy.waitUntil(
     () =>
-      cy
-        .contains("td", agentName)
-        .parent()
+      cy.get("[data-cy="+agentName+"]")
         .children()
         .eq(0)
         .then(($div) => {

@@ -8,7 +8,6 @@ describe("Testing CRUD operation with MyHub", () => {
     "Clearing the cookies, login as admin and visiting the MyHub route",
     () => {
       cy.requestLogin(user.AdminName, user.AdminPassword);
-      cy.waitForCluster(agent);
       cy.visit("/chaoshub");
     }
   );

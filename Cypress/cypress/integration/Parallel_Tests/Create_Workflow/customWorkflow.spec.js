@@ -142,7 +142,7 @@ describe("Testing the validation of the final verdict with an existing target ap
       .eq(1)
       .then(($div) => {
         cy.wrap($div).find("td").eq(0).find("p").should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(1).find("p").should("have.text", agent); // Matching Target Agent
+        cy.wrap($div).find("td").eq(1).find("p").eq(1).should("have.text", " "+ agent); // Matching Target Agent
       });
   });
 
