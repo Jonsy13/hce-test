@@ -36,15 +36,15 @@ elif cat /etc/issue | grep -i Ubuntu ; then
   sudo apt-get update -y
   sudo DEBIAN_FRONTEND=noninteractive sudo apt-get install curl -y
 
-    curl -L https://litmus-http-proxy.s3.amazonaws.com/server/toxiproxy-server-linux-${ARCH}.tar.gz --output toxiproxy-server-linux-${ARCH}.tar.gz && \
-    tar zxvf toxiproxy-server-linux-${ARCH}.tar.gz -C /usr/local/bin/ && \
-    chmod +x /usr/local/bin/toxiproxy-server && \
-    rm toxiproxy-server-linux-${ARCH}.tar.gz
+  curl -L https://litmus-http-proxy.s3.amazonaws.com/server/toxiproxy-server-linux-${ARCH}.tar.gz --output toxiproxy-server-linux-${ARCH}.tar.gz && \
+  tar zxvf toxiproxy-server-linux-${ARCH}.tar.gz -C /usr/local/bin/ && \
+  chmod +x /usr/local/bin/toxiproxy-server && \
+  rm toxiproxy-server-linux-${ARCH}.tar.gz
 
-    curl -L https://litmus-http-proxy.s3.amazonaws.com/cli/toxiproxy-cli-linux-${ARCH}.tar.gz --output toxiproxy-cli-linux-${ARCH}.tar.gz && \
-    tar zxvf toxiproxy-cli-linux-${ARCH}.tar.gz -C /usr/local/bin/ && \
-    chmod +x /usr/local/bin/toxiproxy-cli && \
-    rm toxiproxy-cli-linux-${ARCH}.tar.gz
+  curl -L https://litmus-http-proxy.s3.amazonaws.com/cli/toxiproxy-cli-linux-${ARCH}.tar.gz --output toxiproxy-cli-linux-${ARCH}.tar.gz && \
+  tar zxvf toxiproxy-cli-linux-${ARCH}.tar.gz -C /usr/local/bin/ && \
+  chmod +x /usr/local/bin/toxiproxy-cli && \
+  rm toxiproxy-cli-linux-${ARCH}.tar.gz
 
   if [[ ! "$( which iptables 2>/dev/null )" ]]
   then
