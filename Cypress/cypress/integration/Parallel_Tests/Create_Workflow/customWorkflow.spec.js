@@ -156,7 +156,7 @@ describe("Testing the validation of the final verdict with an existing target ap
     cy.validateVerdict(
       workflowName,
       agent,
-      "Succeeded",
+      "Completed",
       100,
       1,
       1,
@@ -170,7 +170,7 @@ describe("Testing the validation of the final verdict with an existing target ap
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
-      "Succeeded",
+      "Completed",
     ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)
@@ -233,7 +233,12 @@ describe("Testing the validation of the final verdict with an existing target ap
       .clear()
       .type(workflowName);
     cy.wait(2000);
-    cy.rerunWorkflow();
+    cy.get("table")
+      .find("tr")
+      .eq(1)
+      .then(($div) => {
+        cy.wrap($div).find("td").eq(6).find("button").click({ scrollBehavior: false })
+      });
   });
 
   it("Checking workflow browsing table and validating Verdict, Resilience score and Chaos Experiments passed", () => {

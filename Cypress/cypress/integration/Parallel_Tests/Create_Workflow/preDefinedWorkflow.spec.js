@@ -112,7 +112,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
       .eq(1)
       .then(($div) => {
         cy.wrap($div).find("td").eq(0).find("p").should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(1).find("p").should("have.text", agent); // Matching Target Agent
+        cy.wrap($div).find("td").eq(1).find("p").eq(1).should("have.text", " "+ agent); // Matching Target Agent
       });
   });
 
@@ -140,7 +140,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
-      "Succeeded",
+      "Completed",
     ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)

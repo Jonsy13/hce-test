@@ -153,14 +153,23 @@ Cypress.Commands.add("editScheduleByMins", (minsToSet) => {
 
 /// ************************** Disable schedule ***********
 
-Cypress.Commands.add("disableSchedule", () => {
+Cypress.Commands.add("disableSchedule", (isRecurring = false) => {
   cy.get("[data-cy=browseScheduleOptions]")
     .eq(0)
     .click({ scrollBehavior: false });
-  cy.get("[data-cy=disableSchedule]")
+  if(isRecurring == true){
+    cy.get("[data-cy=disableSchedule]")
     .eq(0)
-    .should("have.text", "Disable schedule")
+    .should("have.text", "Halt this schedule")
     .click({ force: true });
+  }
+  else {
+    cy.get("[data-cy=disableSchedule]")
+    .eq(0)
+    .should("have.text", "Halt Chaos Scenario")
+    .click({ force: true });
+  }
+  cy.contains("Halt all Scenarios").click()
 });
 
 /// ************************** Enable schedule ***********
@@ -196,7 +205,7 @@ Cypress.Commands.add("terminateWorkflow", () => {
     .click({ scrollBehavior: false });
   cy.get("[data-cy=terminateWorkflow]")
     .eq(0)
-    .should("have.text", "Terminate Chaos Scenario")
+    .should("have.text", "Halt Chaos Scenario Run")
     .click({ force: true });
 });
 

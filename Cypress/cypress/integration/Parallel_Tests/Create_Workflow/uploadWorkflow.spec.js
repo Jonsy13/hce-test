@@ -63,7 +63,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
       .eq(1)
       .then(($div) => {
         cy.wrap($div).find("td").eq(0).should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(1).should("have.text", agent); // Matching Target Agent
+        cy.wrap($div).find("td").eq(1).find("p").eq(1).should("have.text", " "+ agent); // Matching Target Agent
       });
   });
 
@@ -77,7 +77,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.validateVerdict(
       workflowName,
       agent,
-      "Succeeded",
+      "Completed",
       100,
       1,
       1,
@@ -91,7 +91,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
-      "Succeeded",
+      "Completed",
     ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)

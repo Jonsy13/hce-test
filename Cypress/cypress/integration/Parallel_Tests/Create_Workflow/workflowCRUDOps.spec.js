@@ -61,7 +61,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=browseSchedule]").click();
-    cy.disableSchedule();
+    cy.disableSchedule(true);
     let FirstRowWorkflowName = "";
     cy.get("[data-cy=runs]").click();
     const currDate = new Date();
@@ -104,7 +104,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
       .eq(1)
       .then(($div) => {
         cy.wrap($div).find("td").eq(0).should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(1).should("have.text", agent); // Matching Target Agent
+        cy.wrap($div).find("td").eq(1).find("p").eq(1).should("have.text", " "+ agent); // Matching Target Agent
         // Needs to be fixed according to UI changes
         // scheduleTime = scheduleDate.toLocaleString("en-US", {
         //   hour: "numeric",
@@ -162,7 +162,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
     cy.validateVerdict(
       workflowName,
       agent,
-      "Succeeded",
+      "Completed",
       100,
       1,
       1,
