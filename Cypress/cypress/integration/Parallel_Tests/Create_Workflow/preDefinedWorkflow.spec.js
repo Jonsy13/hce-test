@@ -141,7 +141,7 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
-      "Failed",
+      "Completed",
     ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)

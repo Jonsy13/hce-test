@@ -51,9 +51,6 @@ describe("Testing the workflow creation wizard using Templates", () => {
       .then(($div) => {
         cy.wrap($div).find("td").eq(1).should("have.text", "Running"); // Matching Status
         cy.wrap($div).find("td").eq(2).should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(3).find("p").eq(1).should("have.text", " "+ agent); // Matching Target Agent
-        // cy.wrap($div).find("td [data-cy=browseWorkflowOptions]").click(); // Clicking on 3 Dots
-        // cy.get("[data-cy=listWorkflowRuns]").eq(0).click(); // Checking Workflow Graph And Other Details
       });
   });
 

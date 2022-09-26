@@ -248,7 +248,7 @@ describe("Testing the validation of the final verdict with an existing target ap
         weight: 5,
       },
     ];
-    cy.validateVerdict(workflowName, agent, "Failed", 0, 0, 1, Experiments);
+    cy.validateVerdict(workflowName, agent, "Completed", 0, 0, 1, Experiments);
   });
 
   // it("Testing the workflow statistics", () => {
