@@ -162,36 +162,36 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
     cy.deleteTargetApplication(targetAppNamespace, "target-app-1");
   });
 
-  it("Testing the workflow statistics", () => {
-    cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit("/analytics");
-    cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
-    cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
-    cy.validateWorkflowInfo(
-      workflowName,
-      workflowNamespace,
-      agent,
-      "Cron workflow",
-      "Cron workflow"
-    );
-    cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0, "Cron workflow");
-    cy.validateRecurringStats();
-    const experimentArray = [
-      {
-        experimentName: "pod-delete",
-        verdict: "Pass",
-        weightOfTest: 10,
-        resultingPoints: 10,
-      },
-    ];
-    cy.validateExperimentsTable(experimentArray);
-  });
+  // it("Testing the workflow statistics", () => {
+  //   cy.GraphqlWait("listWorkflows", "recentRuns");
+  //   cy.visit("/analytics");
+  //   cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
+  //   cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
+  //   cy.validateWorkflowInfo(
+  //     workflowName,
+  //     workflowNamespace,
+  //     agent,
+  //     "Cron workflow",
+  //     "Cron workflow"
+  //   );
+  //   cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0, "Cron workflow");
+  //   cy.validateRecurringStats();
+  //   const experimentArray = [
+  //     {
+  //       experimentName: "pod-delete",
+  //       verdict: "Pass",
+  //       weightOfTest: 10,
+  //       resultingPoints: 10,
+  //     },
+  //   ];
+  //   cy.validateExperimentsTable(experimentArray);
+  // });
 
   it("Disable schedule", () => {
     cy.visit("/scenarios");
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy=browseSchedule]").click();
-    cy.disableSchedule();
+    cy.disableSchedule(true);
   });
 });

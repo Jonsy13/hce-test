@@ -148,7 +148,7 @@ describe("Test case to check the Invitation Functionality (Invitation as a Viewe
   it("Agent Connection should be disabled", () => {
     cy.get("[data-cy=targets]").click();
     cy.get("[data-cy=connectAgentButton] Button").should("be.disabled");
-    cy.contains("td", "Self-Agent").parent().children().eq(7).click();
+    cy.get("[data-cy=browseScheduleOptions]").eq(0).click();
     // Checking COPY-targetID button to be enabled
     cy.get("[data-cy=agentMenu] li")
       .eq(0)
@@ -312,7 +312,7 @@ describe("Test case to check the Invitation Functionality (Invitation as an Edit
   it("Agent Connection should be enabled", () => {
     cy.get("[data-cy=targets]").click();
     cy.get("[data-cy=connectAgentButton] Button").should("be.enabled");
-    cy.contains("td", "Self-Agent").parent().children().eq(7).click();
+    cy.get("[data-cy=browseScheduleOptions]").eq(0).click();
     // Checking COPY-targetID button to be enabled
     cy.get("[data-cy=agentMenu] li")
       .eq(0)

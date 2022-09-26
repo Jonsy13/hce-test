@@ -169,7 +169,7 @@ Cypress.Commands.add("disableSchedule", (isRecurring = false) => {
     .should("have.text", "Halt Chaos Scenario")
     .click({ force: true });
   }
-  cy.contains("Halt all Scenarios").click()
+  cy.contains("Halt this Scenario").click()
 });
 
 /// ************************** Enable schedule ***********

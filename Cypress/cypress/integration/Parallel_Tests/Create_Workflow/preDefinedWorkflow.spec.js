@@ -15,6 +15,10 @@ describe("Testing the workflow creation wizard using PreDefined Experiments", ()
 
   let workflowName = "";
 
+  it("Creating a target application", () => {
+    cy.createTargetApplication(targetAppNamespace, "target-app-1", "nginx");
+  });
+  
   it("Running PreDefined Workflow", () => {
     cy.chooseAgent(agent);
     cy.GraphqlWait("listPredefinedWorkflows", "getPredefinedData");

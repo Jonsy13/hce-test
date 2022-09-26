@@ -64,7 +64,7 @@ describe("Testing the validation of the final verdict with an existing target ap
     cy.get("[data-cy=addExperimentSearch]")
       .find("input")
       .clear()
-      .type("kubernetes");
+      .type("pod-delete");
     cy.get("[data-cy=ExperimentList] :radio").eq(0).check();
     cy.get("[data-cy=AddExperimentDoneButton]").click();
     /**
@@ -198,29 +198,29 @@ describe("Testing the validation of the final verdict with an existing target ap
     cy.deleteTargetApplication(targetAppNamespace, "target-app-1");
   });
 
-  it("Testing the workflow statistics", () => {
-    cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit("/analytics");
-    cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
-    cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
-    cy.validateWorkflowInfo(
-      workflowName,
-      workflowNamespace,
-      agent,
-      "Non cron Chaos Scenario",
-      "Non cron Chaos Scenario"
-    );
-    cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
-    const experimentArray = [
-      {
-        experimentName: "pod-delete",
-        verdict: "Pass",
-        weightOfTest: 5,
-        resultingPoints: 5,
-      },
-    ];
-    cy.validateExperimentsTable(experimentArray);
-  });
+  // it("Testing the workflow statistics", () => {
+  //   cy.GraphqlWait("listWorkflows", "recentRuns");
+  //   cy.visit("/analytics");
+  //   cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
+  //   cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
+  //   cy.validateWorkflowInfo(
+  //     workflowName,
+  //     workflowNamespace,
+  //     agent,
+  //     "Non cron Chaos Scenario",
+  //     "Non cron Chaos Scenario"
+  //   );
+  //   cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
+  //   const experimentArray = [
+  //     {
+  //       experimentName: "pod-delete",
+  //       verdict: "Pass",
+  //       weightOfTest: 5,
+  //       resultingPoints: 5,
+  //     },
+  //   ];
+  //   cy.validateExperimentsTable(experimentArray);
+  // });
 
   // This will runs the above workflow without target application
   it("Rerun a non-recurring workflow", () => {
@@ -251,19 +251,19 @@ describe("Testing the validation of the final verdict with an existing target ap
     cy.validateVerdict(workflowName, agent, "Failed", 0, 0, 1, Experiments);
   });
 
-  it("Testing the workflow statistics", () => {
-    cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit("/analytics");
-    cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
-    cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
-    cy.validateWorkflowInfo(
-      workflowName,
-      workflowNamespace,
-      agent,
-      "Non cron Chaos Scenario",
-      "Non cron Chaos Scenario"
-    );
-    cy.validateWorkflowStatsGraph(1, 1, 50, 50, 50);
-    cy.validateRecurringStatsWithLessResiliency();
-  });
+  // it("Testing the workflow statistics", () => {
+  //   cy.GraphqlWait("listWorkflows", "recentRuns");
+  //   cy.visit("/analytics");
+  //   cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
+  //   cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
+  //   cy.validateWorkflowInfo(
+  //     workflowName,
+  //     workflowNamespace,
+  //     agent,
+  //     "Non cron Chaos Scenario",
+  //     "Non cron Chaos Scenario"
+  //   );
+  //   cy.validateWorkflowStatsGraph(1, 1, 50, 50, 50);
+  //   cy.validateRecurringStatsWithLessResiliency();
+  // });
 });

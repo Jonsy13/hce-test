@@ -88,14 +88,14 @@ describe("Testing the workflow creation wizard using Templates", () => {
     cy.wait(6000);
   });
 
-  it("Terminating the workflow", () => {
+  it("halting the workflow", () => {
     cy.validateWorkflowStatus(workflowName, workflowNamespace, ["Running"]);
     cy.visit("/scenarios");
     cy.get("[data-cy=runs]").click();
     cy.GraphqlWait("listWorkflows", "listSchedules");
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.terminateWorkflow();
-    cy.get("[data-cy=WorkflowStatus]").eq(0).should("have.text", "Terminated");
+    cy.get("[data-cy=WorkflowStatus]").eq(0).should("have.text", "Stopped");
     cy.wait(500);
     cy.validateWorkflowExistence(workflowName, workflowNamespace, false);
   });
@@ -217,27 +217,27 @@ describe("Testing the workflow creation wizard using Templates", () => {
     cy.deleteTargetApplication(targetAppNamespace, "target-app-1");
   });
 
-  it("Testing the workflow statistics", () => {
-    cy.GraphqlWait("listWorkflows", "recentRuns");
-    cy.visit("/analytics");
-    cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
-    cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
-    cy.validateWorkflowInfo(
-      workflowName,
-      workflowNamespace,
-      agent,
-      "Non cron Chaos Scenario",
-      "Non cron Chaos Scenario"
-    );
-    cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
-    const experimentArray = [
-      {
-        experimentName: "pod-delete",
-        verdict: "Pass",
-        weightOfTest: 5,
-        resultingPoints: 5,
-      },
-    ];
-    cy.validateExperimentsTable(experimentArray);
-  });
+  // it("Testing the workflow statistics", () => {
+  //   cy.GraphqlWait("listWorkflows", "recentRuns");
+  //   cy.visit("/analytics");
+  //   cy.wait("@recentRuns").its("response.statusCode").should("eq", 200);
+  //   cy.get(`[data-cy=${workflowName}]`).find("[data-cy=statsButton]").click();
+  //   cy.validateWorkflowInfo(
+  //     workflowName,
+  //     workflowNamespace,
+  //     agent,
+  //     "Non cron Chaos Scenario",
+  //     "Non cron Chaos Scenario"
+  //   );
+  //   cy.validateWorkflowStatsGraph(1, 0, 100, 100, 0);
+  //   const experimentArray = [
+  //     {
+  //       experimentName: "pod-delete",
+  //       verdict: "Pass",
+  //       weightOfTest: 5,
+  //       resultingPoints: 5,
+  //     },
+  //   ];
+  //   cy.validateExperimentsTable(experimentArray);
+  // });
 });
