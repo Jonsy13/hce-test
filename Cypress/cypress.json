@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://104.154.45.55:9091/",
+  "baseUrl": "http://35.226.221.87:9091/",
   "experimentalFetchPolyfill": true,
   "viewportWidth": 3840,
   "viewportHeight": 2160,
@@ -8,9 +8,9 @@
   "video": false,
   "experimentalNetworkStubbing": true,
   "env": {
-    "authURL": "http://104.154.45.55:9091/auth/",
-    "apiURL": "http://104.154.45.55:9091/api/",
-    "licenseURL": "http://104.154.45.55:9091/license/",
+    "authURL": "http://35.226.221.87:9091/auth/",
+    "apiURL": "http://35.226.221.87:9091/api/",
+    "licenseURL": "http://35.226.221.87:9091/license/",
     "KUBE_API_SERVER": "",
     "KUBE_API_TOKEN": "",
     "AGENT_NAMESPACE" : "litmus",

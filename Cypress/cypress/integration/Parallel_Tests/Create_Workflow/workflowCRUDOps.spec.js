@@ -63,6 +63,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
     cy.get("[data-cy=browseSchedule]").click();
     cy.disableSchedule(true);
     let FirstRowWorkflowName = "";
+    cy.root().click();
     cy.get("[data-cy=runs]").click();
     const currDate = new Date();
     const timeDiff = scheduleDate.getTime() - currDate.getTime();
@@ -79,6 +80,7 @@ describe("Testing the workflow schedule on a recurring basis with a target appli
   it("Enable schedule and reschedule it for +2 mins", () => {
     cy.get("[data-cy=browseSchedule]").click();
     cy.enableSchedule();
+    cy.root().click();
     scheduleDate = new Date();
     // Schedule 2 min later from current time
     scheduleDate.setMinutes(scheduleDate.getMinutes() + 2);

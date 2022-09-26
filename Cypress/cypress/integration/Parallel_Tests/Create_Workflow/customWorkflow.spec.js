@@ -170,7 +170,7 @@ describe("Testing the validation of the final verdict with an existing target ap
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
-      "Completed",
+      "Succeeded",
     ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)
@@ -237,7 +237,7 @@ describe("Testing the validation of the final verdict with an existing target ap
       .find("tr")
       .eq(1)
       .then(($div) => {
-        cy.wrap($div).find("td").eq(6).find("button").click({ scrollBehavior: false })
+        cy.wrap($div).find("td").eq(7).find("button").click({ scrollBehavior: false })
       });
   });
 

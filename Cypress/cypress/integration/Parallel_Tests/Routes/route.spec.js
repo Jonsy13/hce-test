@@ -13,7 +13,7 @@ describe("Testing the routes functionality without Login [ Must redirect to Logi
   });
 });
 
-describe("Testing the routes with login [Must redirect to known required page or 404 for unknown page]", () => {
+describe("Testing the routes with login [Must redirect to known required page or /home for unknown page]", () => {
   before("Login in to Web App", () => {
     indexedDB.deleteDatabase("localforage");
     cy.visit("/");
@@ -33,7 +33,7 @@ describe("Testing the routes with login [Must redirect to known required page or
 
     it("Testing unknown route", () => {
       cy.visit("/unknown");
-      cy.url().should("include", "404");
+      cy.url().should("include", "/home");
     });
   });
 });

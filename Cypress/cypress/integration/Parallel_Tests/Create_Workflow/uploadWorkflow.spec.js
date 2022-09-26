@@ -91,7 +91,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
-      "Completed",
+      "Succeeded",
     ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)
@@ -143,7 +143,7 @@ describe("Testing the upload Workflow with correct workflow manifest and target 
 //     ];
 //     cy.validateExperimentsTable(experimentArray);
 //   });
-// });
+});
 
 describe("Testing the upload Workflow with incorrect workflow manifest", () => {
   before("Clearing the Cookies and deleting the Cookies", () => {

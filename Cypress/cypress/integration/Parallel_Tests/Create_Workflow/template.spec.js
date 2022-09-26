@@ -51,7 +51,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
       .then(($div) => {
         cy.wrap($div).find("td").eq(1).should("have.text", "Running"); // Matching Status
         cy.wrap($div).find("td").eq(2).should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(1).find("p").eq(1).should("have.text", " "+ agent); // Matching Target Agent
+        cy.wrap($div).find("td").eq(3).find("p").eq(1).should("have.text", " "+ agent); // Matching Target Agent
         // cy.wrap($div).find("td [data-cy=browseWorkflowOptions]").click(); // Clicking on 3 Dots
         // cy.get("[data-cy=listWorkflowRuns]").eq(0).click(); // Checking Workflow Graph And Other Details
       });
@@ -96,8 +96,6 @@ describe("Testing the workflow creation wizard using Templates", () => {
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.terminateWorkflow();
     cy.get("[data-cy=WorkflowStatus]").eq(0).should("have.text", "Stopped");
-    cy.wait(500);
-    cy.validateWorkflowExistence(workflowName, workflowNamespace, false);
   });
 
   it("Creating a target application", () => {
@@ -160,7 +158,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
       .eq(1)
       .then(($div) => {
         cy.wrap($div).find("td").eq(0).should("have.text", workflowName); // Matching Workflow Name Regex
-        cy.wrap($div).find("td").eq(1).should("have.text", agent); // Matching Target Agent
+        cy.wrap($div).find("td").eq(1).should("include.text", agent); // Matching Target Agent
       });
   });
 
@@ -188,7 +186,7 @@ describe("Testing the workflow creation wizard using Templates", () => {
     cy.wait("@listSchedules").its("response.statusCode").should("eq", 200);
     cy.validateWorkflowStatus(workflowName, workflowNamespace, [
       "Running",
-      "Completed",
+      "Succeeded",
     ]);
     cy.get("[data-cy=WorkflowRunsTable] input")
       .eq(0)
